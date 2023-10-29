@@ -18,13 +18,13 @@ public class Main implements ActionListener {
     JFrame frame;
     JButton[] mainMenu, subMenuOne, subMenuTwo, backButtons;
     String atMenu = "m0";
-    NoWrapJTextPane textPane;
-    JScrollPane scrollPane;
+    NoWrapJTextPane mainDisplayTextPane;
+    JScrollPane mainDisplayScrollPane;
     ArrayList <Album> albums = new ArrayList <>();
     int albumIndexChosen = -1;
     Color myGreen = new Color(114, 170, 85);
     Color myBlue = new Color(0, 141, 213);
-
+    Color defaultBackgroundColor = new Color(236, 236, 236);
     ImageIcon sadPikachu = new ImageIcon("sad pikachu.png");
     ImageIcon happyPikachu = new ImageIcon("happy pikachu.png");
     Font cmu_serif_20 = new Font("CMU Serif", Font.PLAIN, 20);
@@ -237,11 +237,11 @@ public class Main implements ActionListener {
             backButtons[i].setVisible(true);
         }
         //------------------------------------ TEXT PANE SETUP ---------------------------------------------
-        textPane = new NoWrapJTextPane();
-        textPane.setFont(cmu_serif_14_bold);
-        textPane.setEditable(false);
-        scrollPane = new JScrollPane(textPane);
-        scrollPane.setVisible(false);
+        mainDisplayTextPane = new NoWrapJTextPane();
+        mainDisplayTextPane.setFont(cmu_serif_14_bold);
+        mainDisplayTextPane.setEditable(false);
+        mainDisplayScrollPane = new JScrollPane(mainDisplayTextPane);
+        mainDisplayScrollPane.setVisible(false);
 
         //------------------------------------FRAME RESIZED COMPONENT LISTENER ---------------------------------------------
         frame.addComponentListener(new ComponentAdapter() {
@@ -284,7 +284,7 @@ public class Main implements ActionListener {
         for (JButton jButton : backButtons) {
             panel.add(jButton);
         }
-        panel.add(scrollPane);
+        panel.add(mainDisplayScrollPane);
         frame.add(panel);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -353,7 +353,7 @@ public class Main implements ActionListener {
                     case 1: // Display a list of all albums
                         System.out.println("m1o1 picked");
                         showTheTextPane(subMenuOne, 0, width, height);
-                        printNameDateAllAlbums(textPane);
+                        printNameDateAllAlbums(mainDisplayTextPane);
                         break;
                     case 2: // Display info on a particular album
                         System.out.println("m1o2 picked");
@@ -375,7 +375,7 @@ public class Main implements ActionListener {
                     case 5: // Show statistics
                         showTheTextPane(subMenuOne, 0, width, height);
                         System.out.println("m1o5 picked");
-                        printStatistics(textPane);
+                        printStatistics(mainDisplayTextPane);
                         break;
                     case 6:
                         System.out.println("m1 but !o3. 0 albums imported");
@@ -402,7 +402,7 @@ public class Main implements ActionListener {
                 atMenu = "m1";
                 System.out.println("back to album menu");
                 backButtons[0].setVisible(false);
-                scrollPane.setVisible(false);
+                mainDisplayScrollPane.setVisible(false);
                 perfectlySizedButtons(subMenuOne, panel.getWidth(), panel.getHeight(), firstMenuFont(panel.getWidth() * panel.getHeight()));
                 for (JButton jButton : subMenuOne) {
                     jButton.setVisible(true);
@@ -412,7 +412,7 @@ public class Main implements ActionListener {
                 atMenu = "m2";
                 System.out.println("back to card menu");
                 backButtons[1].setVisible(false);
-                scrollPane.setVisible(false);
+                mainDisplayScrollPane.setVisible(false);
                 perfectlySizedButtons(subMenuTwo, panel.getWidth(), panel.getHeight(), secondMenuFont(panel.getWidth() * panel.getHeight()));
                 for (JButton jButton : subMenuTwo) {
                     jButton.setVisible(true);
@@ -472,7 +472,7 @@ public class Main implements ActionListener {
         Font buttonFont = new Font("CMU Serif", Font.BOLD, calculatedFont);
         backButton.setBounds(xCo, buttonYCo, componentWidth, buttonHeight);
         backButton.setFont(buttonFont);
-        scrollPane.setBounds(xCo, paneYCo, componentWidth, paneHeight);
+        mainDisplayScrollPane.setBounds(xCo, paneYCo, componentWidth, paneHeight);
     }
 
     public int mainMenuFont (double area) {
@@ -517,14 +517,19 @@ public class Main implements ActionListener {
         chooseAlbumPanel.setLayout(null);
         int BUTTONRounding = 50;
         int BUTTONBorder = 1;
+        JScrollPane[] pickAlbumScrollPanes = new JScrollPane[albums.size()];
         JButton[] pickAlbumButtons = new JButton[albums.size()];
         String buttonText;
+        int buttonHeight;
         for (int i = 0; i < pickAlbumButtons.length; i++) {
             if (allData) {
                 buttonText = albums.get(i).toString();
+                buttonHeight = 150;
             } else {
                 buttonText = albums.get(i).nameDateToString();
+                buttonHeight = 100;
             }
+            // "<html><body style='width: 100px'>" + buttonText.replaceAll("\n", "<br>") + "</body></html>"
             pickAlbumButtons[i] = new JButton("<html>" + buttonText.replaceAll("\n", "<br>") + "</html>") {
                 // This paintComponent method fills the button with a round rectangle.
                 @Override
@@ -539,8 +544,15 @@ public class Main implements ActionListener {
                     // Call the super method to draw the text
                     super.paintComponent(g);
                 }
+                @Override
+                public Dimension getPreferredSize() {
+                    Dimension size = super.getPreferredSize();
+                    size.width = size.width - BUTTONRounding * 2;
+                    size.height = size.height - BUTTONRounding * 2;
+                    return size;
+                }
             };
-            pickAlbumButtons[i].setFont(cmu_serif_40_bold);
+            pickAlbumButtons[i].setFont(cmu_serif_18);
             pickAlbumButtons[i].setBackground(buttonColor);
             pickAlbumButtons[i].setFocusable(false);
             pickAlbumButtons[i].setOpaque(false); // Make the button transparent
@@ -563,11 +575,17 @@ public class Main implements ActionListener {
                 chooseAlbumDialog.dispose();
             });
             pickAlbumButtons[i].setVisible(true);
-            pickAlbumButtons[i].setBounds(25, 25 + i * 125, 350, 100);
+            pickAlbumButtons[i].getInsets(new Insets(10,10,10,10));
+            pickAlbumScrollPanes[i] = new JScrollPane(pickAlbumButtons[i]);
+            pickAlbumScrollPanes[i].setBounds(25, 25 + i * (25+buttonHeight), 350, buttonHeight);
+            pickAlbumScrollPanes[i].setOpaque(false);
+            pickAlbumScrollPanes[i].getViewport().setOpaque(false);
+            pickAlbumScrollPanes[i].setBackground(defaultBackgroundColor);
+            pickAlbumScrollPanes[i].setBorder(BorderFactory.createLineBorder(defaultBackgroundColor));
         }
 
-        for (JButton jButton : pickAlbumButtons) {
-            chooseAlbumPanel.add(jButton);
+        for (JScrollPane jscrollpane : pickAlbumScrollPanes) {
+            chooseAlbumPanel.add(jscrollpane);
         }
         JScrollPane chooseAlbumScrollPane = new JScrollPane(chooseAlbumPanel);
         chooseAlbumDialog.add(chooseAlbumScrollPane);
@@ -645,9 +663,9 @@ public class Main implements ActionListener {
     }
 
     public void printAlbum () {
-        textPane.setText("");
+        mainDisplayTextPane.setText("");
         try {
-            appendString(albums.get(albumIndexChosen) + "\n", textPane);
+            appendString(albums.get(albumIndexChosen) + "\n", mainDisplayTextPane);
         } catch (BadLocationException ignored) {
         }
         albumIndexChosen = -1;
@@ -665,7 +683,7 @@ public class Main implements ActionListener {
             jButton.setVisible(false);
         }
         backButtons[backButtonToShow].setVisible(true);
-        scrollPane.setVisible(true);
+        mainDisplayScrollPane.setVisible(true);
     }
 
     public void importAlbum () {
@@ -690,7 +708,7 @@ public class Main implements ActionListener {
         textPane.setParagraphAttributes(attrs, false);
         textPane.setText("Enter the file name to import the new Album from. No file extension.");
         textPane.setBounds(xCo, splitIntoParts, componentWidth, splitIntoParts * 2);
-        textPane.setBackground(new Color(236, 236, 236));
+        textPane.setBackground(defaultBackgroundColor);
         textPane.setFont(cmu_serif_20);
         textPane.setEditable(false);
 
