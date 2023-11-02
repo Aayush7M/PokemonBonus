@@ -1,0 +1,34 @@
+5
+5/20/2001
+5
+4
+CaRD1NaME               
+61
+CArd1TYPE
+3/12/1985
+2
+Double Slap - Flip 2 coins. 20 damage for each head.
+20x
+Rollout
+10
+caRD1NaMe
+16
+CArd2TYPE
+4/1/1985
+1
+Some attack
+some damage
+CaRD2NaME               
+16
+CArd3TYPE
+3/12/1985
+1
+Some attack
+some damage
+card3NAME
+13
+card3Type
+2/29/2002
+1
+some attack
+some damAGE
