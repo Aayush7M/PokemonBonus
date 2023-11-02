@@ -7,10 +7,7 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Main implements ActionListener {
@@ -27,10 +24,10 @@ public class Main implements ActionListener {
     Color defaultBackgroundColor = new Color(238, 238, 238);
     ImageIcon sadPikachu = new ImageIcon("sad pikachu.png");
     ImageIcon happyPikachu = new ImageIcon("happy pikachu.png");
-    Font cmu_serif_20 = new Font("CMU Serif", Font.PLAIN, 20);
-    Font cmu_serif_18 = new Font("CMU Serif", Font.PLAIN, 18);
-    Font cmu_serif_40_bold = new Font("CMU Serif", Font.BOLD, 40);
-    Font cmu_serif_14_bold = new Font("CMU Serif", Font.BOLD, 14);
+    Font cmu_serif_20 = loadFont(20,false);
+    Font cmu_serif_18 = loadFont(18,false);
+    Font cmu_serif_40_bold = loadFont(40,true);
+    Font cmu_serif_14_bold = loadFont(14,true);
 
     public Main () {
         readFile("1", albums);
@@ -483,33 +480,38 @@ public class Main implements ActionListener {
             importCardDialog.setPreferredSize(new Dimension(500 + 19, 750 + 28 + 20));
             importCardPanel.setPreferredSize(new Dimension(500, 750));
             int width = 500;
-//            int height = 750;
+            int height = 750;
             importCardPanel.setLayout(null);
-//            int BUTTONRounding = 50;
-//            int BUTTONBorder = 1;
+            int BUTTONRounding = 50;
+            int BUTTONBorder = 1;
             JLabel[] promptLabels = new JLabel[5];
             JLabel[] errorLabels = new JLabel[5];
             JTextField[] inputFields = new JTextField[5];
-//            String buttonText;
-//            int buttonHeight;
+            String buttonText;
+            int buttonHeight;
             String[] prompts = {"Name", "HP", "Type", "Date in MM/DD/YYYY"};
             for (int i = 0; i < 4; i++) {
-                promptLabels[i] = new JLabel("Card" + prompts[i] + ": ");
-                promptLabels[i].setBounds(width / 8, 20 + i * 145, 100, 50);
+                promptLabels[i] = new JLabel( prompts[i] + ": ");
+                promptLabels[i].setBounds(15, 20 + i * 115, 210, 50);
                 promptLabels[i].setFont(cmu_serif_18);
+                promptLabels[i].setHorizontalAlignment(JLabel.CENTER);
+                promptLabels[i].setBackground(Color.white);
+                promptLabels[i].setOpaque(true);
                 importCardPanel.add(promptLabels[i]);
 
                 inputFields[i] = new JTextField();
-                inputFields[i].setBounds(width / 8 + 110, 20 + i * 145, 275, 50);
+                inputFields[i].setBounds(15 + 210, 20 + i * 115, 275, 50);
                 inputFields[i].setHorizontalAlignment(JTextField.CENTER);
                 inputFields[i].setFont(cmu_serif_18);
                 importCardPanel.add(inputFields[i]);
 
                 errorLabels[i] = new JLabel("bingbong");
-                errorLabels[i].setBounds(width / 8, 80 + i * 145, 375, 75);
+                errorLabels[i].setBounds(15, 70 + i * 115, 480, 50);
                 errorLabels[i].setForeground(Color.RED);
                 errorLabels[i].setHorizontalAlignment(JLabel.CENTER);
                 errorLabels[i].setFont(cmu_serif_18);
+                errorLabels[i].setBackground(Color.white);
+                errorLabels[i].setOpaque(true);
                 importCardPanel.add(errorLabels[i]);
             }
 
@@ -572,7 +574,7 @@ public class Main implements ActionListener {
         int buttonHeight = (int) Math.round((height * 2.0) / divideBy);
         int xTranslation = (int) Math.round(width / 8.0);
         int yTranslation = (int) Math.round(height / (divideBy + 0.0));
-        Font buttonFont = new Font("CMU Serif", Font.BOLD, calculatedFont);
+        Font buttonFont = loadFont(calculatedFont,true);
         int yStep = (int) Math.round((height * 3.0) / divideBy);
         for (int i = 0; i < myButtons.length; i++) {
             myButtons[i].setBounds(xTranslation, yTranslation + yStep * i, buttonWidth, buttonHeight);
@@ -590,7 +592,7 @@ public class Main implements ActionListener {
         int buttonYCo = (int) Math.round((height * 8.0) / 10);
         int buttonHeight = (int) Math.round((height * 1.0) / 10);
 
-        Font buttonFont = new Font("CMU Serif", Font.BOLD, calculatedFont);
+        Font buttonFont = loadFont(calculatedFont,true);
         backButton.setBounds(xCo, buttonYCo, componentWidth, buttonHeight);
         backButton.setFont(buttonFont);
         mainDisplayScrollPane.setBounds(xCo, paneYCo, componentWidth, paneHeight);
@@ -1240,5 +1242,20 @@ public class Main implements ActionListener {
             // Call the super method to draw the text
             super.paintComponent(g);
         }
+    }
+    public static Font loadFont(float size, boolean bold) {
+        Font customFont = new Font("Arial",Font.PLAIN,16);
+        try {
+            // Load the font file
+            if (bold) {
+                return customFont = Font.createFont(Font.TRUETYPE_FONT, new File("cmunbx.ttf")).deriveFont(size);
+            } else {
+                return customFont = Font.createFont(Font.TRUETYPE_FONT, new File("cmunrm.ttf")).deriveFont(size);
+            }
+            // Register the font
+//            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//            ge.registerFont(customFont);
+        } catch (IOException | FontFormatException ignored) {}
+        return customFont;
     }
 }
