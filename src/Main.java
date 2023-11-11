@@ -499,6 +499,7 @@ public class Main implements ActionListener {
                 } else {
                     card.getAttack(attackIndexChosen).edit("name", input);
                     editAttackDialog.dispose();
+                    System.out.println("attack name edited");
                 }
             } else if (radio2.isSelected()) { //date
                 String errorName = validString(input, false);
@@ -507,6 +508,7 @@ public class Main implements ActionListener {
                 } else {
                     card.getAttack(attackIndexChosen).edit("description", input);
                     editAttackDialog.dispose();
+                    System.out.println("attack description edited");
                 }
             } else if (radio3.isSelected()) { //date
                 String errorName = validString(input, true);
@@ -515,6 +517,7 @@ public class Main implements ActionListener {
                 } else {
                     card.getAttack(attackIndexChosen).edit("damage", input);
                     editAttackDialog.dispose();
+                    System.out.println("attack damage edited");
                 }
             }
 
@@ -663,6 +666,7 @@ public class Main implements ActionListener {
                 }
                 currentAlbum.addCard(new Card(name, HP, type, date, attacks));
                 importCardDialog.dispose();
+                System.out.println("card imported");
             });
             submitCardButton.setVisible(false);
             submitCardButton.setBounds(15, 445, 480, 50);
@@ -1014,6 +1018,7 @@ public class Main implements ActionListener {
                     errorPane.setText(result);
                 } else {
                     removeCardDialog.dispose();
+                    System.out.println("card removed by name");
                 }
             } else if (radio2.isSelected()) { //date
                 String result = removeCardHP(input, currentAlbum);
@@ -1021,13 +1026,16 @@ public class Main implements ActionListener {
                     errorPane.setText(result);
                 } else {
                     removeCardDialog.dispose();
+                    System.out.println("card removed by hp");
                 }
             } else if (radio3.isSelected()) { //date
                 currentAlbum.removeCard(0);
                 removeCardDialog.dispose();
+                System.out.println("card removed by first in last sorted order");
             } else if (radio4.isSelected()) { //date
                 currentAlbum.removeCard(currentAlbum.getCardsSize() - 1);
                 removeCardDialog.dispose();
+                System.out.println("card removed by last in last sorted order");
             }
 
         });
@@ -1417,6 +1425,7 @@ public class Main implements ActionListener {
             chooseButtons[i].addActionListener(e -> {
                 chooseHelperAssignI(title, finalI);
                 chooseDialog.dispose();
+                System.out.println(title + " index " + finalI + " chosen");
             });
             chooseButtons[i].setVisible(true);
             chooseScrollPanes[i] = new JScrollPane(chooseButtons[i]);
@@ -1581,6 +1590,7 @@ public class Main implements ActionListener {
                 errorLabel.setText(returnedString);
             } else {
                 getFileNameDialog.dispose();
+                System.out.println("album with file name \"" + returnedString + "\" imported");
             }
 
         });
@@ -1611,8 +1621,8 @@ public class Main implements ActionListener {
         int xCo = (int) Math.round((width * 1.0) / 8);
         int splitIntoParts = (int) Math.round((height * 1.0) / 7.75);
 
-        removeAlbumDialog.setPreferredSize(new Dimension(700, height + 28));
-        removeAlbumPanel.setPreferredSize(new Dimension(700, height));
+        removeAlbumDialog.setPreferredSize(new Dimension(585, height + 28));
+        removeAlbumPanel.setPreferredSize(new Dimension(585, height));
 
         JLabel label1 = new JLabel("Choose removal method:");
         label1.setBounds(xCo + 4, (int) Math.round(splitIntoParts * 0.25), componentWidth,
@@ -1662,6 +1672,7 @@ public class Main implements ActionListener {
                     errorPane.setText(result);
                 } else {
                     removeAlbumDialog.dispose();
+                    System.out.println("album removed by number");
                 }
             } else if (radio2.isSelected()) { //date
                 String result = removeAlbumDate(input);
@@ -1669,6 +1680,7 @@ public class Main implements ActionListener {
                     errorPane.setText(result);
                 } else {
                     removeAlbumDialog.dispose();
+                    System.out.println("album removed by date");
                 }
             }
 
@@ -1706,7 +1718,7 @@ public class Main implements ActionListener {
         removeAlbumTextPane.setEditable(false);
         JScrollPane displayScrollPane = new JScrollPane(removeAlbumTextPane);
         displayScrollPane.setBounds(xCo + componentWidth + 25, (int) Math.round(splitIntoParts * 0.25),
-                700 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((height * 7.25) / 7.75));
+                585 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((height * 7.25) / 7.75));
         printNameDateAllAlbums(removeAlbumTextPane);
         displayScrollPane.setVisible(true);
         removeAlbumTextPane.setVisible(true);

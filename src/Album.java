@@ -65,18 +65,19 @@ public class Album implements Comparable <Album> {
 
     public String printNameDateAllCards () {
         StringBuilder returnString = new StringBuilder();
-        for (Card card : cards) {
-            returnString.append(card.nameDateToString()).append("\n\n");
+        for (int i = 0 ; i<cards.size()-1 ; i++) {
+            returnString.append(cards.get(i).nameDateToString()).append("\n\n");
         }
+        returnString.append(cards.get(cards.size()-1).nameDateToString());
         return returnString.toString();
     }
 
     public String printAllInfoAllCards () {
-
         StringBuilder returnString = new StringBuilder();
-        for (Card card : cards) {
-            returnString.append(card).append("\n\n");
+        for (int i = 0 ; i<cards.size()-1 ; i++) {
+            returnString.append(cards.get(i)).append("\n\n");
         }
+        returnString.append(cards.get(cards.size()-1));
         return returnString.toString();
     }
 
