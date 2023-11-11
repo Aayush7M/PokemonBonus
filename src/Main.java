@@ -9,7 +9,10 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main implements ActionListener {
@@ -52,70 +55,60 @@ public class Main implements ActionListener {
         mainPanel.setSize(width, height);
         mainPanel.setLayout(null);
 
-        //--------------------------------------------SAD PIKACHU RESIZING--------------------------------------------------
+        //--------------------------------------------SAD PIKACHU RESIZING------------------------------------------------
         Image image = sadPikachu.getImage();
         Image newImg = image.getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH);
         sadPikachu = new ImageIcon(newImg);
         image = happyPikachu.getImage();
         newImg = image.getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH);
         happyPikachu = new ImageIcon(newImg);
-        //-----------------------------------------------MAIN MENU----------------------------------------------------------
+        //-----------------------------------------------MAIN MENU--------------------------------------------------------
         String[] mainMenuText = {"Album Actions", "Card Actions"};
         Color[] colorsInOrder = {myGreen, myBlue};
         mainMenu = new yayJButton[2];
         for (int i = 0; i < mainMenu.length; i++) {
             mainMenu[i] = new yayJButton(buttonRounding, mainMenuText[i]);
-            setUpThisButton(mainMenu[i],buttonRounding,colorsInOrder[i],cmu_serif_14_bold);
+            setUpThisButton(mainMenu[i], buttonRounding, colorsInOrder[i], cmu_serif_14_bold);
             mainMenu[i].addActionListener(this);
             mainMenu[i].setActionCommand("m0o" + (i + 1));
             mainMenu[i].setVisible(true);
         }
 
-        //-----------------------------------------ALBUM MENU-------------------------------------------------------
-        String[] subMenuOneText =
-                {"Display a list of all albums",
-                        "Display information on a particular album",
-                        "Add an album",
-                        "Remove an album (2 options)",
-                        "Show statistics",
-                        "Return back to main menu"};
+        //-----------------------------------------ALBUM MENU-------------------------------------------------------------
+        String[] subMenuOneText = {"Display a list of all albums", "Display information on a particular album",
+                "Add an album", "Remove an album (2 options)", "Show statistics", "Return back to main menu"};
         albumMenu = new yayJButton[6];
         for (int i = 0; i < albumMenu.length; i++) {
-            albumMenu[i] = new yayJButton(lessButtonRounding,subMenuOneText[i]);
-            setUpThisButton(albumMenu[i], lessButtonRounding,myGreen,cmu_serif_40_bold);
+            albumMenu[i] = new yayJButton(lessButtonRounding, subMenuOneText[i]);
+            setUpThisButton(albumMenu[i], lessButtonRounding, myGreen, cmu_serif_40_bold);
             albumMenu[i].addActionListener(this);
             albumMenu[i].setActionCommand("m1o" + (i + 1));
             albumMenu[i].setVisible(true);
         }
 
-        //-----------------------------------------CARD MENU-------------------------------------------------------
-        String[] subMenuTwoText =
-                {"Display all cards (in the last sorted order)",
-                        "Display information on a particular card",
-                        "Add a card",
-                        "Remove a card (4 options)",
-                        "Edit attack",
-                        "Sort cards (3 options)",
-                        "Return back to main menu"};
+        //-----------------------------------------CARD MENU--------------------------------------------------------------
+        String[] subMenuTwoText = {"Display all cards (in the last sorted order)",
+                "Display information on a particular card", "Add a card", "Remove a card (4 options)", "Edit attack",
+                "Sort cards (3 options)", "Return back to main menu"};
         cardMenu = new yayJButton[7];
         for (int i = 0; i < cardMenu.length; i++) {
             cardMenu[i] = new yayJButton(lessButtonRounding, subMenuTwoText[i]);
-            setUpThisButton(cardMenu[i], lessButtonRounding,myBlue,cmu_serif_40_bold);
+            setUpThisButton(cardMenu[i], lessButtonRounding, myBlue, cmu_serif_40_bold);
             cardMenu[i].addActionListener(this);
             cardMenu[i].setActionCommand("m2o" + (i + 1));
             cardMenu[i].setVisible(true);
         }
-        //------------------------------------ BACK BUTTONS ---------------------------------------------
+        //------------------------------------ BACK BUTTONS --------------------------------------------------------------
 
         backButtons = new yayJButton[2];
         for (int i = 0; i < backButtons.length; i++) {
-            backButtons[i] = new yayJButton(lessButtonRounding,"Go Back");
-            setUpThisButton(backButtons[i], lessButtonRounding,colorsInOrder[i],cmu_serif_40_bold);
+            backButtons[i] = new yayJButton(lessButtonRounding, "Go Back");
+            setUpThisButton(backButtons[i], lessButtonRounding, colorsInOrder[i], cmu_serif_40_bold);
             backButtons[i].addActionListener(this);
             backButtons[i].setActionCommand("b" + (i + 1));
             backButtons[i].setVisible(true);
         }
-        //------------------------------------ TEXT PANE SETUP ---------------------------------------------
+        //------------------------------------ TEXT PANE SETUP -----------------------------------------------------------
         mainDisplayTextPane = new NoWrapJTextPane();
         mainDisplayTextPane.setFont(cmu_serif_14_bold);
         mainDisplayTextPane.setEditable(false);
@@ -123,7 +116,7 @@ public class Main implements ActionListener {
         mainDisplayScrollPane.setVisible(false);
         mainDisplayScrollPane.setFont(cmu_serif_14_bold);
 
-        //------------------------------------FRAME RESIZED COMPONENT LISTENER ---------------------------------------------
+        //------------------------------------FRAME RESIZED COMPONENT LISTENER -------------------------------------------
         mainFrame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized (ComponentEvent e) {
@@ -141,7 +134,7 @@ public class Main implements ActionListener {
             }
         });
 
-        //-----------------------------------------FINAL SETUP-------------------------------------------------------
+        //-----------------------------------------FINAL SETUP------------------------------------------------------------
         for (yayJButton jButton : mainMenu) {
             mainPanel.add(jButton);
         }
@@ -181,7 +174,8 @@ public class Main implements ActionListener {
                 for (yayJButton jButton : mainMenu) {
                     jButton.setVisible(false);
                 }
-                perfectlySizedButtons(albumMenu, mainPanel.getWidth(), mainPanel.getHeight(), firstMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
+                perfectlySizedButtons(albumMenu, mainPanel.getWidth(), mainPanel.getHeight(),
+                        firstMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
                 for (yayJButton jButton : albumMenu) {
                     jButton.setVisible(true);
                 }
@@ -197,19 +191,21 @@ public class Main implements ActionListener {
                     for (yayJButton jButton : mainMenu) {
                         jButton.setVisible(false);
                     }
-                    perfectlySizedButtons(cardMenu, mainPanel.getWidth(), mainPanel.getHeight(), secondMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
+                    perfectlySizedButtons(cardMenu, mainPanel.getWidth(), mainPanel.getHeight(),
+                            secondMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
                     for (yayJButton jButton : cardMenu) {
                         jButton.setVisible(true);
                     }
                     return;
                 } else {
-                    chooseFromAList(myBlue, true, "album",150);
+                    chooseFromAList(myBlue, true, "album", 150);
                     if (albumIndexChosen != -1) {
                         atMenu = "m2";
                         for (yayJButton jButton : mainMenu) {
                             jButton.setVisible(false);
                         }
-                        perfectlySizedButtons(cardMenu, mainPanel.getWidth(), mainPanel.getHeight(), secondMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
+                        perfectlySizedButtons(cardMenu, mainPanel.getWidth(), mainPanel.getHeight(),
+                                secondMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
                         for (yayJButton jButton : cardMenu) {
                             jButton.setVisible(true);
                         }
@@ -240,7 +236,7 @@ public class Main implements ActionListener {
                         break;
                     case 2: // Display info on a particular album
                         System.out.println("m1o2 picked");
-                        chooseFromAList(myGreen, false,"album",100);
+                        chooseFromAList(myGreen, false, "album", 100);
                         if (albumIndexChosen != -1) {
                             showTheTextPane(albumMenu, 0, width, height);
                             printAlbum();
@@ -298,11 +294,11 @@ public class Main implements ActionListener {
                     case 1: // Display all cards (in the last sorted order)
                         System.out.println("m2o1 picked");
                         showTheTextPane(cardMenu, 1, width, height);
-                        printCards(mainDisplayTextPane, currentAlbum,false);
+                        printCards(mainDisplayTextPane, currentAlbum, false);
                         break;
                     case 2: // Display info on a particular card
                         System.out.println("m1o2 picked");
-                        chooseFromAList(myBlue, false, "card",100);
+                        chooseFromAList(myBlue, false, "card", 100);
                         if (cardIndexChosen != -1) {
                             showTheTextPane(cardMenu, 1, width, height);
                             printCard(cards);
@@ -318,26 +314,26 @@ public class Main implements ActionListener {
                         break;
                     case 5: // Edit attack
                         System.out.println("m2o5");
-                        chooseFromAList(myBlue, false, "card",100);
+                        chooseFromAList(myBlue, false, "card", 100);
                         if (cardIndexChosen != -1) {
-                            if (currentAlbum.getCard(cardIndexChosen).getAttacksLength()==1) {
+                            if (currentAlbum.getCard(cardIndexChosen).getAttacksLength() == 1) {
                                 oneAttackInCard();
                                 attackIndexChosen = 0;
                             } else {
-                                chooseFromAList(myBlue, true, "attack",125);
+                                chooseFromAList(myBlue, true, "attack", 125);
                             }
-                            if (attackIndexChosen!=-1) {
+                            if (attackIndexChosen != -1) {
                                 editAttack(currentAlbum.getCard(cardIndexChosen));
                             }
                         }
                         break;
                     case 6: // Sort cards (3 options)
                         System.out.println("m2o6");
-                        chooseFromAList(myBlue, false, "sort",50);
+                        chooseFromAList(myBlue, false, "sort", 50);
                         if (sortIndexChosen != -1) {
                             sortCards(currentAlbum);
                             showTheTextPane(cardMenu, 1, width, height);
-                            printCards(mainDisplayTextPane, currentAlbum,true);
+                            printCards(mainDisplayTextPane, currentAlbum, true);
                         }
                         break;
                     case 7:
@@ -355,11 +351,11 @@ public class Main implements ActionListener {
                         break;
                     case 10: // edit only card
                         System.out.println("m2o5 only one card");
-                        if (currentAlbum.getCard(cardIndexChosen).getAttacksLength()==1) {
+                        if (currentAlbum.getCard(cardIndexChosen).getAttacksLength() == 1) {
                             oneAttackInCard();
                             attackIndexChosen = 0;
                         } else {
-                            chooseFromAList(myBlue, true, "attack",125);
+                            chooseFromAList(myBlue, true, "attack", 125);
                         }
                         editAttack(currentAlbum.getCard(0));
                         break;
@@ -378,7 +374,8 @@ public class Main implements ActionListener {
                 System.out.println("back to album menu");
                 backButtons[0].setVisible(false);
                 mainDisplayScrollPane.setVisible(false);
-                perfectlySizedButtons(albumMenu, mainPanel.getWidth(), mainPanel.getHeight(), firstMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
+                perfectlySizedButtons(albumMenu, mainPanel.getWidth(), mainPanel.getHeight(),
+                        firstMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
                 for (yayJButton jButton : albumMenu) {
                     jButton.setVisible(true);
                 }
@@ -388,7 +385,8 @@ public class Main implements ActionListener {
                 System.out.println("back to card menu");
                 backButtons[1].setVisible(false);
                 mainDisplayScrollPane.setVisible(false);
-                perfectlySizedButtons(cardMenu, mainPanel.getWidth(), mainPanel.getHeight(), secondMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
+                perfectlySizedButtons(cardMenu, mainPanel.getWidth(), mainPanel.getHeight(),
+                        secondMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
                 for (yayJButton jButton : cardMenu) {
                     jButton.setVisible(true);
                 }
@@ -400,7 +398,8 @@ public class Main implements ActionListener {
                 for (yayJButton jButton : albumMenu) {
                     jButton.setVisible(false);
                 }
-                perfectlySizedButtons(mainMenu, mainPanel.getWidth(), mainPanel.getHeight(), mainMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
+                perfectlySizedButtons(mainMenu, mainPanel.getWidth(), mainPanel.getHeight(),
+                        mainMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
                 for (yayJButton jButton : mainMenu) {
                     jButton.setVisible(true);
                 }
@@ -412,7 +411,8 @@ public class Main implements ActionListener {
                 for (yayJButton jButton : cardMenu) {
                     jButton.setVisible(false);
                 }
-                perfectlySizedButtons(mainMenu, mainPanel.getWidth(), mainPanel.getHeight(), mainMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
+                perfectlySizedButtons(mainMenu, mainPanel.getWidth(), mainPanel.getHeight(),
+                        mainMenuFont(mainPanel.getWidth() * mainPanel.getHeight()));
                 for (yayJButton jButton : mainMenu) {
                     jButton.setVisible(true);
                 }
@@ -426,7 +426,8 @@ public class Main implements ActionListener {
             case 2 -> currentAlbum.sortCardsByDate();
         }
     }
-    public void errorPaneSetUp(JTextPane errorPane){
+
+    public void errorPaneSetUp (JTextPane errorPane) {
         StyledDocument doc = errorPane.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -436,6 +437,7 @@ public class Main implements ActionListener {
         errorPane.setForeground(Color.red);
         errorPane.setEditable(false);
     }
+
     public void editAttack (Card card) {
         JDialog editAttackDialog = new JDialog(mainFrame, "Edit Attack", true);
         JPanel editAttackPanel = new JPanel();
@@ -456,11 +458,11 @@ public class Main implements ActionListener {
         radio1.setFont(cmu_serif_18);
 
         JRadioButton radio2 = new JRadioButton("Description");
-        radio2.setBounds(xCo, 50+radioHeight, componentWidth, radioHeight);
+        radio2.setBounds(xCo, 50 + radioHeight, componentWidth, radioHeight);
         radio2.setFont(cmu_serif_18);
 
         JRadioButton radio3 = new JRadioButton("Damage");
-        radio3.setBounds(xCo, 50+radioHeight*2, componentWidth, radioHeight);
+        radio3.setBounds(xCo, 50 + radioHeight * 2, componentWidth, radioHeight);
         radio3.setFont(cmu_serif_18);
 
         ButtonGroup group = new ButtonGroup();
@@ -488,8 +490,8 @@ public class Main implements ActionListener {
         errorPaneSetUp(errorPane);
         errorPane.setBounds(xCo, 275, componentWidth, 50);
 
-        yayJButton removeCardButton = new yayJButton(20,"Edit Attack");
-        setUpThisButton(removeCardButton,20,myBlue,cmu_serif_20);
+        yayJButton removeCardButton = new yayJButton(20, "Edit Attack");
+        setUpThisButton(removeCardButton, 20, myBlue, cmu_serif_20);
         removeCardButton.addActionListener(e -> {
             String input = textField.getText();
             if (radio1.isSelected()) { // number
@@ -497,7 +499,7 @@ public class Main implements ActionListener {
                 if (!errorName.isEmpty()) { // invalid input
                     errorPane.setText(errorName);
                 } else {
-                    card.getAttack(attackIndexChosen).edit("name",input);
+                    card.getAttack(attackIndexChosen).edit("name", input);
                     editAttackDialog.dispose();
                 }
             } else if (radio2.isSelected()) { //date
@@ -505,7 +507,7 @@ public class Main implements ActionListener {
                 if (!errorName.isEmpty()) { // invalid input
                     errorPane.setText(errorName);
                 } else {
-                    card.getAttack(attackIndexChosen).edit("description",input);
+                    card.getAttack(attackIndexChosen).edit("description", input);
                     editAttackDialog.dispose();
                 }
             } else if (radio3.isSelected()) { //date
@@ -513,7 +515,7 @@ public class Main implements ActionListener {
                 if (!errorName.isEmpty()) { // invalid input
                     errorPane.setText(errorName);
                 } else {
-                    card.getAttack(attackIndexChosen).edit("damage",input);
+                    card.getAttack(attackIndexChosen).edit("damage", input);
                     editAttackDialog.dispose();
                 }
             }
@@ -573,7 +575,7 @@ public class Main implements ActionListener {
         editAttackDialog.setVisible(true);
     }
 
-    public void setUpThisButton (JButton thisButton,int cornerRadius, Color buttonColor, Font font) {
+    public void setUpThisButton (JButton thisButton, int cornerRadius, Color buttonColor, Font font) {
         thisButton.setFont(font);
         thisButton.setBackground(buttonColor);
         thisButton.setFocusable(false);
@@ -598,9 +600,11 @@ public class Main implements ActionListener {
 
     public void importCard (Album currentAlbum) {
         if (currentAlbum.atMaxCapacity()) {
-            JLabel label = new JLabel("<html> Sorry, this album is <br> at maximum capacity. You <br> cannot add more cards. </html>");
+            JLabel label = new JLabel("<html> Sorry, this album is <br> at maximum capacity. " +
+                    "You <br> cannot add more cards. </html>");
             label.setFont(cmu_serif_18);
-            JOptionPane.showMessageDialog(null, label, "Album at Max Capacity", JOptionPane.INFORMATION_MESSAGE, sadPikachu);
+            JOptionPane.showMessageDialog(null, label, "Album at Max Capacity",
+                    JOptionPane.INFORMATION_MESSAGE, sadPikachu);
         } else {
             JDialog importCardDialog = new JDialog(mainFrame, "Add Card", true);
             JPanel importCardPanel = new JPanel();
@@ -612,25 +616,26 @@ public class Main implements ActionListener {
             JLabel[] errorLabels = new JLabel[5];
             JTextField[] inputFields = new JTextField[5];
             String[] prompts = {"Name", "HP", "Type", "Date in MM/DD/YYYY", "Number of Attacks"};
-            makeForm(promptLabels,inputFields,errorLabels,prompts,importCardPanel);
+            makeForm(promptLabels, inputFields, errorLabels, prompts, importCardPanel);
 
             JLabel[] attackPromptNumLabels = new JLabel[10];
             JLabel[] attackPromptTypeLabels = new JLabel[30];
             JLabel[] attackErrorLabels = new JLabel[20];
             JTextField[] attackInputFields = new JTextField[30];
 
-            makeAttackForm(attackPromptNumLabels, attackPromptTypeLabels,attackInputFields,attackErrorLabels,importCardPanel,570,10);
+            makeAttackForm(attackPromptNumLabels, attackPromptTypeLabels, attackInputFields, attackErrorLabels,
+                    importCardPanel, 570, 10);
 
-            yayJButton submitCardButton = new yayJButton(20,"Import Album");
-            setUpThisButton(submitCardButton,20,myBlue,cmu_serif_20);
+            yayJButton submitCardButton = new yayJButton(20, "Import Album");
+            setUpThisButton(submitCardButton, 20, myBlue, cmu_serif_20);
             submitCardButton.addActionListener(e -> {
-                String name = getString(inputFields[0].getText(),errorLabels[0], true);
-                int HP = getInt(inputFields[1].getText(),errorLabels[1],1,Integer.MAX_VALUE);
-                String type = getString(inputFields[2].getText(),errorLabels[2], true);
+                String name = getString(inputFields[0].getText(), errorLabels[0], true);
+                int HP = getInt(inputFields[1].getText(), errorLabels[1], 1, Integer.MAX_VALUE);
+                String type = getString(inputFields[2].getText(), errorLabels[2], true);
                 errorLabels[3].setText(validDate(inputFields[3].getText()));
                 int value = getInt(inputFields[4].getText(), errorLabels[4], 1, 10);
-                for (int i = 0, j = 0; i < value*3; i++) {
-                    if (i%3==0||i%3==2) {
+                for (int i = 0, j = 0; i < value * 3; i++) {
+                    if (i % 3 == 0 || i % 3 == 2) {
                         attackErrorLabels[j].setText(validString(attackInputFields[i].getText(), true));
                         j++;
                     }
@@ -640,7 +645,7 @@ public class Main implements ActionListener {
                         return;
                     }
                 }
-                for (int i = 0; i < value*2; i++) {
+                for (int i = 0; i < value * 2; i++) {
                     if (attackErrorLabels[i].getText().isEmpty()) {
                         break;
                     }
@@ -648,9 +653,9 @@ public class Main implements ActionListener {
                 Date date = new Date(parseDate(inputFields[3].getText()));
                 Attack[] attacks = new Attack[value];
                 for (int j = 0; j < attacks.length; j++) {
-                    String attackName = attackInputFields[j*3].getText();
-                    String attackDescription = attackInputFields[j*3+1].getText();
-                    String attackDamage = attackInputFields[j*3+2].getText();
+                    String attackName = attackInputFields[j * 3].getText();
+                    String attackDescription = attackInputFields[j * 3 + 1].getText();
+                    String attackDamage = attackInputFields[j * 3 + 2].getText();
                     attacks[j] = (new Attack(attackName, attackDescription, attackDamage));
                 }
                 currentAlbum.addCard(new Card(name, HP, type, date, attacks));
@@ -667,47 +672,49 @@ public class Main implements ActionListener {
                     if (value >= 1) {
                         for (int i = 0; i < value; i++) {
                             attackPromptNumLabels[i].setVisible(true);
-                            for (int j = i*3; j < (i*3+3); j++) {
+                            for (int j = i * 3; j < (i * 3 + 3); j++) {
                                 attackPromptTypeLabels[j].setVisible(true);
                                 attackInputFields[j].setVisible(true);
                             }
-                            attackErrorLabels[i*2].setVisible(true);
-                            attackErrorLabels[i*2+1].setVisible(true);
+                            attackErrorLabels[i * 2].setVisible(true);
+                            attackErrorLabels[i * 2 + 1].setVisible(true);
                         }
                         for (int i = value; i < 10; i++) {
                             attackPromptNumLabels[i].setVisible(false);
-                            for (int j = i*3; j < (i*3+3); j++) {
+                            for (int j = i * 3; j < (i * 3 + 3); j++) {
                                 attackPromptTypeLabels[j].setVisible(false);
                                 attackInputFields[j].setVisible(false);
                             }
-                            attackErrorLabels[i*2].setVisible(false);
-                            attackErrorLabels[i*2+1].setVisible(false);
+                            attackErrorLabels[i * 2].setVisible(false);
+                            attackErrorLabels[i * 2 + 1].setVisible(false);
                         }
                         submitCardButton.setVisible(true);
                         submitCardButton.setBounds(15, 570 + 315 * value, 480, 50);
-                        importCardPanel.setPreferredSize(new Dimension(500, 570+65 + 315 * value));
-                        importCardScrollPane.setPreferredSize(new Dimension(500, 570+65 + 315 * value));
+                        importCardPanel.setPreferredSize(new Dimension(500, 570 + 65 + 315 * value));
+                        importCardScrollPane.setPreferredSize(new Dimension(500, 570 + 65 + 315 * value));
                     } else {
                         for (int i = 0; i < 10; i++) {
                             attackPromptNumLabels[i].setVisible(false);
-                            for (int j = i*3; j < (i*3+3); j++) {
+                            for (int j = i * 3; j < (i * 3 + 3); j++) {
                                 attackPromptTypeLabels[j].setVisible(false);
                                 attackInputFields[j].setVisible(false);
                             }
-                            attackErrorLabels[i*2].setVisible(false);
-                            attackErrorLabels[i*2+1].setVisible(false);
+                            attackErrorLabels[i * 2].setVisible(false);
+                            attackErrorLabels[i * 2 + 1].setVisible(false);
                         }
                         submitCardButton.setVisible(false);
                         importCardPanel.setPreferredSize(new Dimension(500, 750));
                         importCardScrollPane.setPreferredSize(new Dimension(500, 750));
                     }
                 }
+
                 @Override
-                public void insertUpdate(DocumentEvent e) {
+                public void insertUpdate (DocumentEvent e) {
                     changedUpdate(e);
                 }
+
                 @Override
-                public void removeUpdate(DocumentEvent e) {
+                public void removeUpdate (DocumentEvent e) {
                     changedUpdate(e);
                 }
             });
@@ -726,11 +733,11 @@ public class Main implements ActionListener {
         }
     }
 
-    public void makeForm (JLabel[] promptLabels, JTextField[] inputFields, JLabel[] errorLabels,
-                          String[] prompts, JPanel importCardPanel) {
+    public void makeForm (JLabel[] promptLabels, JTextField[] inputFields, JLabel[] errorLabels, String[] prompts,
+                          JPanel importCardPanel) {
         for (int i = 0; i < 5; i++) {
 
-            promptLabels[i] = new JLabel( prompts[i] + ": ");
+            promptLabels[i] = new JLabel(prompts[i] + ": ");
             promptLabels[i].setBounds(15, 20 + i * 110, 210, 50);
             promptLabels[i].setFont(cmu_serif_18);
             promptLabels[i].setHorizontalAlignment(JLabel.CENTER);
@@ -744,7 +751,7 @@ public class Main implements ActionListener {
             importCardPanel.add(inputFields[i]);
 
             errorLabels[i] = new JLabel();
-            errorLabels[i].setBounds(15, 20+50 + i * 110, 480, 50);
+            errorLabels[i].setBounds(15, 20 + 50 + i * 110, 480, 50);
             errorLabels[i].setForeground(Color.RED);
             errorLabels[i].setHorizontalAlignment(JLabel.CENTER);
             errorLabels[i].setFont(cmu_serif_18);
@@ -754,42 +761,48 @@ public class Main implements ActionListener {
         inputFields[0].getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate (DocumentEvent e) {
-                errorLabels[0].setText(validString(inputFields[0].getText(),true));
+                errorLabels[0].setText(validString(inputFields[0].getText(), true));
             }
+
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
+
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
         });
         inputFields[1].getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate (DocumentEvent e) {
-                errorLabels[1].setText(validInt(inputFields[1].getText(),1,Integer.MAX_VALUE));
+                errorLabels[1].setText(validInt(inputFields[1].getText(), 1, Integer.MAX_VALUE));
             }
+
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
+
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
         });
         inputFields[2].getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate (DocumentEvent e) {
-                errorLabels[2].setText(validString(inputFields[2].getText(),true));
+                errorLabels[2].setText(validString(inputFields[2].getText(), true));
             }
+
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
+
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
         });
@@ -798,12 +811,14 @@ public class Main implements ActionListener {
             public void changedUpdate (DocumentEvent e) {
                 errorLabels[3].setText(validDate(inputFields[3].getText()));
             }
+
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
+
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate (DocumentEvent e) {
                 changedUpdate(e);
             }
         });
@@ -813,11 +828,11 @@ public class Main implements ActionListener {
                                 JTextField[] attackInputFields, JLabel[] attackErrorLabels, JPanel importCardPanel,
                                 int startYVal, int numOfAttacks) {
         for (int i = 0; i < numOfAttacks; i++) {
-            int three = i*3;
-            int two = i*2;
-            int shiftBy = i*315;
+            int three = i * 3;
+            int two = i * 2;
+            int shiftBy = i * 315;
 
-            attackPromptNumLabels[i] = new JLabel("Enter Attack #"+ (i+1)+ ": ");
+            attackPromptNumLabels[i] = new JLabel("Enter Attack #" + (i + 1) + ": ");
             attackPromptNumLabels[i].setBounds(15, startYVal + shiftBy, 480, 50);
             attackPromptNumLabels[i].setFont(cmu_serif_18);
             attackPromptNumLabels[i].setHorizontalAlignment(JLabel.CENTER);
@@ -826,8 +841,8 @@ public class Main implements ActionListener {
             importCardPanel.add(attackPromptNumLabels[i]);
 
             // NAME:
-            attackPromptTypeLabels[three] = new JLabel( "Name: ");
-            attackPromptTypeLabels[three].setBounds(15, startYVal+50 +shiftBy, 120, 50);
+            attackPromptTypeLabels[three] = new JLabel("Name: ");
+            attackPromptTypeLabels[three].setBounds(15, startYVal + 50 + shiftBy, 120, 50);
             attackPromptTypeLabels[three].setFont(cmu_serif_18);
             attackPromptTypeLabels[three].setHorizontalAlignment(JLabel.CENTER);
             attackPromptTypeLabels[three].setOpaque(true);
@@ -836,7 +851,7 @@ public class Main implements ActionListener {
 
             // Name Text Field
             attackInputFields[three] = new JTextField();
-            attackInputFields[three].setBounds(15 + 120, startYVal+50 + shiftBy, 365, 50);
+            attackInputFields[three].setBounds(15 + 120, startYVal + 50 + shiftBy, 365, 50);
             attackInputFields[three].setHorizontalAlignment(JTextField.CENTER);
             attackInputFields[three].setFont(cmu_serif_18);
             attackInputFields[three].setVisible(false);
@@ -844,7 +859,7 @@ public class Main implements ActionListener {
 
             // Name Error Label
             attackErrorLabels[two] = new JLabel();
-            attackErrorLabels[two].setBounds(15, startYVal+100 + shiftBy, 480, 50);
+            attackErrorLabels[two].setBounds(15, startYVal + 100 + shiftBy, 480, 50);
             attackErrorLabels[two].setForeground(Color.RED);
             attackErrorLabels[two].setHorizontalAlignment(JLabel.CENTER);
             attackErrorLabels[two].setFont(cmu_serif_18);
@@ -856,14 +871,17 @@ public class Main implements ActionListener {
             attackInputFields[three].getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void changedUpdate (DocumentEvent e) {
-                    attackErrorLabels[finalTwo].setText(validString(attackInputFields[finalThree].getText(), true));
+                    attackErrorLabels[finalTwo].setText(validString(attackInputFields[finalThree].getText(),
+                            true));
                 }
+
                 @Override
-                public void insertUpdate(DocumentEvent e) {
+                public void insertUpdate (DocumentEvent e) {
                     changedUpdate(e);
                 }
+
                 @Override
-                public void removeUpdate(DocumentEvent e) {
+                public void removeUpdate (DocumentEvent e) {
                     changedUpdate(e);
                 }
             });
@@ -873,7 +891,7 @@ public class Main implements ActionListener {
             for (int j = 0; j < 2; j++, three++) {
                 int yVal = startYVal + (50 * (j + 3)) + (5 * j) + shiftBy;
                 // description or damage:
-                attackPromptTypeLabels[three] = new JLabel( j==0?"Description":"Damage" + ": ");
+                attackPromptTypeLabels[three] = new JLabel(j == 0 ? "Description" : "Damage" + ": ");
                 attackPromptTypeLabels[three].setBounds(15, yVal, 120, 50);
                 attackPromptTypeLabels[three].setFont(cmu_serif_18);
                 attackPromptTypeLabels[three].setHorizontalAlignment(JLabel.CENTER);
@@ -891,7 +909,7 @@ public class Main implements ActionListener {
             }
             // Damage Error Label
             attackErrorLabels[two] = new JLabel();
-            attackErrorLabels[two].setBounds(15, startYVal+255 + shiftBy, 480, 50);
+            attackErrorLabels[two].setBounds(15, startYVal + 255 + shiftBy, 480, 50);
             attackErrorLabels[two].setForeground(Color.RED);
             attackErrorLabels[two].setHorizontalAlignment(JLabel.CENTER);
             attackErrorLabels[two].setFont(cmu_serif_18);
@@ -900,19 +918,22 @@ public class Main implements ActionListener {
             importCardPanel.add(attackErrorLabels[two]);
 
 
-            int finalThree1 = three-1;
+            int finalThree1 = three - 1;
             int finalTwo1 = two;
             attackInputFields[finalThree1].getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void changedUpdate (DocumentEvent e) {
-                    attackErrorLabels[finalTwo1].setText(validString(attackInputFields[finalThree1].getText(), true));
+                    attackErrorLabels[finalTwo1].setText(validString(attackInputFields[finalThree1].getText(),
+                            true));
                 }
+
                 @Override
-                public void insertUpdate(DocumentEvent e) {
+                public void insertUpdate (DocumentEvent e) {
                     changedUpdate(e);
                 }
+
                 @Override
-                public void removeUpdate(DocumentEvent e) {
+                public void removeUpdate (DocumentEvent e) {
                     changedUpdate(e);
                 }
             });
@@ -920,8 +941,6 @@ public class Main implements ActionListener {
 
         }
     }
-
-
 
 
     public void removeCard (Album currentAlbum) {
@@ -945,15 +964,15 @@ public class Main implements ActionListener {
         radio1.setFont(cmu_serif_18);
 
         JRadioButton radio2 = new JRadioButton("By HP");
-        radio2.setBounds(xCo, 50+radioHeight, componentWidth, radioHeight);
+        radio2.setBounds(xCo, 50 + radioHeight, componentWidth, radioHeight);
         radio2.setFont(cmu_serif_18);
 
         JRadioButton radio3 = new JRadioButton("First Card (in last sorted order)");
-        radio3.setBounds(xCo, 50+radioHeight*2, componentWidth, radioHeight);
+        radio3.setBounds(xCo, 50 + radioHeight * 2, componentWidth, radioHeight);
         radio3.setFont(cmu_serif_18);
 
         JRadioButton radio4 = new JRadioButton("Last Card (in last sorted order)");
-        radio4.setBounds(xCo, 50+radioHeight*3, componentWidth, radioHeight);
+        radio4.setBounds(xCo, 50 + radioHeight * 3, componentWidth, radioHeight);
         radio4.setFont(cmu_serif_18);
 
         ButtonGroup group = new ButtonGroup();
@@ -982,8 +1001,8 @@ public class Main implements ActionListener {
         errorPaneSetUp(errorPane);
         errorPane.setBounds(xCo, 310, componentWidth, 50);
 
-        yayJButton removeCardButton = new yayJButton(20,"Remove Cards");
-        setUpThisButton(removeCardButton,20,myBlue,cmu_serif_20);
+        yayJButton removeCardButton = new yayJButton(20, "Remove Cards");
+        setUpThisButton(removeCardButton, 20, myBlue, cmu_serif_20);
         removeCardButton.addActionListener(e -> {
             String input = textField.getText();
             if (radio1.isSelected()) { // number
@@ -1004,7 +1023,7 @@ public class Main implements ActionListener {
                 currentAlbum.removeCard(0);
                 removeCardDialog.dispose();
             } else if (radio4.isSelected()) { //date
-                currentAlbum.removeCard(currentAlbum.getCardsSize()-1);
+                currentAlbum.removeCard(currentAlbum.getCardsSize() - 1);
                 removeCardDialog.dispose();
             }
 
@@ -1057,8 +1076,9 @@ public class Main implements ActionListener {
         removeCardTextPane.setFont(cmu_serif_18);
         removeCardTextPane.setEditable(false);
         JScrollPane displayScrollPane = new JScrollPane(removeCardTextPane);
-        displayScrollPane.setBounds(xCo + componentWidth + 25, (int) Math.round(splitIntoParts * 0.25), 850 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((435 * 7.25) / 7.75));
-        printCards(removeCardTextPane,currentAlbum,true);
+        displayScrollPane.setBounds(xCo + componentWidth + 25, (int) Math.round(splitIntoParts * 0.25),
+                850 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((435 * 7.25) / 7.75));
+        printCards(removeCardTextPane, currentAlbum, true);
         displayScrollPane.setVisible(true);
         removeCardTextPane.setVisible(true);
 
@@ -1083,7 +1103,7 @@ public class Main implements ActionListener {
     }
 
     public String removeCardName (String input, Album currentAlbum) {
-        String errorName = validString(input,true);
+        String errorName = validString(input, true);
         if (errorName.isEmpty()) {
             String name = input.trim();
             int firstIndexOfName;
@@ -1124,6 +1144,7 @@ public class Main implements ActionListener {
             return errorName;
         }
     }
+
     public String validString (String in, boolean emptyInputForbidden) {
         String inputString; // stores the input
         inputString = in.trim();
@@ -1132,11 +1153,13 @@ public class Main implements ActionListener {
         }
         return "";
     }
+
     public String getString (String in, JLabel errorLbl, boolean emptyInputForbidden) {
-        String validString = validString(in,emptyInputForbidden);
+        String validString = validString(in, emptyInputForbidden);
         errorLbl.setText(validString);
         return in;
     }
+
     public String validInt (String in, int min, int max) {
         if (max < min) {
             min = Integer.MIN_VALUE;
@@ -1144,7 +1167,7 @@ public class Main implements ActionListener {
         }
         double n = -1; // stores the input from the user
         if (in.isEmpty()) {
-            return "Please enter a number "+min+" to "+max+" (inclusive).";
+            return "Please enter a number " + min + " to " + max + " (inclusive).";
         }
         try {
             n = Double.parseDouble(in.trim());
@@ -1183,42 +1206,56 @@ public class Main implements ActionListener {
     }
 
     public void oneAlbumImported () {
-        JLabel label = new JLabel("<html> Only one album imported, <br> so that album has been <br> automatically chosen. </html>");
+        JLabel label = new JLabel("<html> Only one album imported, <br> so that album has been <br> automatically" +
+                "chosen. </html>");
         label.setFont(cmu_serif_18);
-        JOptionPane.showMessageDialog(null, label, "One Album imported", JOptionPane.INFORMATION_MESSAGE, happyPikachu);
+        JOptionPane.showMessageDialog(null, label, "One Album imported",
+                JOptionPane.INFORMATION_MESSAGE, happyPikachu);
         albumIndexChosen = 0;
     }
+
     public void oneAttackInCard () {
-        JLabel label = new JLabel("<html> Only one attack in card, <br> so that attack has been <br> automatically chosen. </html>");
+        JLabel label = new JLabel("<html> Only one attack in card, <br> so that attack has been <br> " +
+                "automatically chosen. </html>");
         label.setFont(cmu_serif_18);
-        JOptionPane.showMessageDialog(null, label, "One Album imported", JOptionPane.INFORMATION_MESSAGE, happyPikachu);
+        JOptionPane.showMessageDialog(null, label, "One Album imported",
+                JOptionPane.INFORMATION_MESSAGE, happyPikachu);
         albumIndexChosen = 0;
     }
 
     public void oneCardInAlbum () {
-        JLabel label = new JLabel("<html> Only one card in album, <br> so that card has been <br> automatically chosen </html>");
+        JLabel label = new JLabel("<html> Only one card in album, <br> so that card has been <br> automatically " +
+                "chosen </html>");
         label.setFont(cmu_serif_18);
-        JOptionPane.showMessageDialog(null, label, "One Card in Album", JOptionPane.INFORMATION_MESSAGE, happyPikachu);
+        JOptionPane.showMessageDialog(null, label, "One Card in Album",
+                JOptionPane.INFORMATION_MESSAGE, happyPikachu);
         cardIndexChosen = 0;
     }
+
     public void oneCardInAlbumSort () {
-        JLabel label = new JLabel("<html> Since there is only one <br> card, output will the <br> same no matter which method <br> " +
-                "of sorting is chosen. Close <br> this window to see <br> the only card in the album </html>");
+        JLabel label = new JLabel("<html> Since there is only one card, <br> output will the same no <br> matter " +
+                "which method " + "of <br> sorting is chosen. Close this <br> window to see the only card <br> in the " +
+                "album. </html>");
         label.setFont(cmu_serif_18);
-        JOptionPane.showMessageDialog(null, label, "One Card in Album", JOptionPane.INFORMATION_MESSAGE, happyPikachu);
+        JOptionPane.showMessageDialog(null, label, "One Card in Album",
+                JOptionPane.INFORMATION_MESSAGE, happyPikachu);
         cardIndexChosen = 0;
     }
 
     public void noAlbumsImported () {
-        JLabel label = new JLabel("<html> There are no albums <br> imported. Please import an <br> album to do this action.</html>");
+        JLabel label = new JLabel("<html> There are no albums <br> imported. Please import an <br> album to do this" +
+                " action.</html>");
         label.setFont(cmu_serif_18);
-        JOptionPane.showMessageDialog(null, label, "No Albums imported", JOptionPane.INFORMATION_MESSAGE, sadPikachu);
+        JOptionPane.showMessageDialog(null, label, "No Albums imported",
+                JOptionPane.INFORMATION_MESSAGE, sadPikachu);
     }
 
     public void noCardsInAlbum () {
-        JLabel label = new JLabel("<html> There are no cards <br> in album. Please add a <br> card to do this action.</html>");
+        JLabel label = new JLabel("<html> There are no cards <br> in album. Please add a <br> card to do this " +
+                "action.</html>");
         label.setFont(cmu_serif_18);
-        JOptionPane.showMessageDialog(null, label, "No Cards in Album", JOptionPane.INFORMATION_MESSAGE, sadPikachu);
+        JOptionPane.showMessageDialog(null, label, "No Cards in Album",
+                JOptionPane.INFORMATION_MESSAGE, sadPikachu);
     }
 
     public void perfectlySizedButtons (yayJButton[] myButtons, int width, int height, int calculatedFont) {
@@ -1249,10 +1286,8 @@ public class Main implements ActionListener {
         System.out.println("calculatedFont = " + calculatedFont);
         backButton.setBounds(xCo, buttonYCo, componentWidth, buttonHeight);
         Font buttonFont = new Font("CMU Serif", Font.BOLD, calculatedFont);
-        double interesting = calculatedFont-3.0*(1.0+0.01*calculatedFont);
-        int weirdNum = (int) Math.round (interesting);
-        Font paneFont = new Font("CMU Serif", Font.PLAIN, weirdNum);
-        System.out.println( interesting+ " vs " + (calculatedFont-6));
+        Font paneFont = new Font("CMU Serif", Font.PLAIN, (int) Math.round(calculatedFont -
+                3.0 * (1.0 + 0.01 * calculatedFont)));
         backButton.setFont(buttonFont);
         mainDisplayScrollPane.setBounds(xCo, paneYCo, componentWidth, paneHeight);
         mainDisplayTextPane.setFont(paneFont);
@@ -1267,14 +1302,16 @@ public class Main implements ActionListener {
     }
 
     public int firstMenuFont (double area) {
-        int font = (int) Math.round(Math.pow(area, 3) / (2.1678e16) + Math.pow(area, 2) / (-1.3351e10) + area / (25176.8) + (14.1098));
+        int font = (int) Math.round(Math.pow(area, 3) / (2.1678e16) + Math.pow(area, 2) / (-1.3351e10) +
+                area / (25176.8) + (14.1098));
         if (font < 21) {
             return 21;
         } else return Math.min(font, 48);
     }
 
     public int secondMenuFont (double area) {
-        int font = (int) Math.round(Math.pow(area, 3) / (2.1678e16) + Math.pow(area, 2) / (-1.3351e10) + area / (25176.8) + (14.1098));
+        int font = (int) Math.round(Math.pow(area, 3) / (2.1678e16) + Math.pow(area, 2) / (-1.3351e10) +
+                area / (25176.8) + (14.1098));
         if (font < 21) {
             return 21;
         } else return Math.min(font, 48);
@@ -1288,8 +1325,9 @@ public class Main implements ActionListener {
         appendString(Album.collectionStatistics() + "\n", useThisTextPane);
 
     }
-    public String chooseHelperGetText (String title, int i, boolean allInfo){
-        switch(title) {
+
+    public String chooseHelperGetText (String title, int i, boolean allInfo) {
+        switch (title) {
             case "album":
                 if (allInfo) {
                     return albums.get(i).toString();
@@ -1311,15 +1349,16 @@ public class Main implements ActionListener {
         return "";
     }
 
-    public void chooseHelperAssignI (String title, int i){
-        switch(title) {
+    public void chooseHelperAssignI (String title, int i) {
+        switch (title) {
             case "album" -> albumIndexChosen = i;
             case "card" -> cardIndexChosen = i;
             case "attack" -> attackIndexChosen = i;
             case "sort" -> sortIndexChosen = i;
         }
     }
-    public int chooseHelperNumOfButtons (String title){
+
+    public int chooseHelperNumOfButtons (String title) {
         return switch (title) {
             case "album" -> albums.size();
             case "card" -> albums.get(albumIndexChosen).getCardsSize();
@@ -1328,7 +1367,8 @@ public class Main implements ActionListener {
             default -> -1;
         };
     }
-    public int chooseHelperButtonRounding (String title){
+
+    public int chooseHelperButtonRounding (String title) {
         if (title.equals("sort")) {
             return 30;
         } else {
@@ -1342,7 +1382,8 @@ public class Main implements ActionListener {
         int numOfButtons = chooseHelperNumOfButtons(title);
         JDialog chooseDialog = new JDialog(mainFrame, "Choose the " + title + " please", true);
         JPanel choosePanel = new JPanel();
-        chooseDialog.setPreferredSize(new Dimension(400 + 19, 28 + Math.min(25 + (buttonHeight + 25) * numOfButtons, 700)));
+        chooseDialog.setPreferredSize(new Dimension(400 + 19, 28 + Math.min(25 + (buttonHeight + 25) *
+                numOfButtons, 700)));
         choosePanel.setPreferredSize(new Dimension(400, 21 + (buttonHeight + 25) * numOfButtons));
         choosePanel.setLayout(null);
         JScrollPane[] chooseScrollPanes = new JScrollPane[numOfButtons];
@@ -1351,11 +1392,12 @@ public class Main implements ActionListener {
 
         for (int i = 0; i < chooseButtons.length; i++) {
             if (allData) {
-                buttonText = chooseHelperGetText(title,i,true);
+                buttonText = chooseHelperGetText(title, i, true);
             } else {
-                buttonText = chooseHelperGetText(title,i,false);
+                buttonText = chooseHelperGetText(title, i, false);
             }
-            chooseButtons[i] = new yayJButton(buttonRounding,"<html>" + buttonText.replaceAll("\n", "<br>") + "</html>") {
+            chooseButtons[i] = new yayJButton(buttonRounding, "<html>" + buttonText.replaceAll("\n",
+                    "<br>") + "</html>") {
                 @Override
                 public Dimension getPreferredSize () {
                     Dimension size = super.getPreferredSize();
@@ -1364,7 +1406,7 @@ public class Main implements ActionListener {
                     return size;
                 }
             };
-            setUpThisButton(chooseButtons[i],buttonRounding,buttonColor,cmu_serif_18);
+            setUpThisButton(chooseButtons[i], buttonRounding, buttonColor, cmu_serif_18);
             int finalI = i;
             chooseButtons[i].addActionListener(e -> {
                 chooseHelperAssignI(title, finalI);
@@ -1416,7 +1458,7 @@ public class Main implements ActionListener {
             Date albumDate = new Date(parseDate(inFile.readLine().trim()));
             int maxCapacity = Integer.parseInt(inFile.readLine().trim());
             int cardsInAlbum = Integer.parseInt(inFile.readLine().trim());
-            ArrayList <Card> cards = new ArrayList <> (cardsInAlbum);
+            ArrayList <Card> cards = new ArrayList <>(cardsInAlbum);
             for (int i = 0; i < cardsInAlbum; i++) {
                 String name = inFile.readLine().trim();
                 int HP = Integer.parseInt(inFile.readLine().trim());
@@ -1457,7 +1499,7 @@ public class Main implements ActionListener {
 
     public void printCards (JTextPane useThisTextPane, Album currentAlbum, boolean allData) {
         useThisTextPane.setText("");
-        appendString(allData?currentAlbum.printAllInfoAllCards():currentAlbum.printNameDateAllCards(), useThisTextPane);
+        appendString(allData ? currentAlbum.printAllInfoAllCards() : currentAlbum.printNameDateAllCards(), useThisTextPane);
     }
 
     public void printAlbum () {
@@ -1475,7 +1517,8 @@ public class Main implements ActionListener {
         try {
             StyledDocument document = (StyledDocument) useThisTextPane.getDocument();
             document.insertString(document.getLength(), str, null);
-        } catch (BadLocationException ignored) {}
+        } catch (BadLocationException ignored) {
+        }
     }
 
     public void showTheTextPane (yayJButton[] buttonsToHide, int backButtonToShow, int width, int height) {
@@ -1523,8 +1566,8 @@ public class Main implements ActionListener {
         errorLabel.setHorizontalAlignment(JLabel.CENTER);
         errorLabel.setFont(cmu_serif_18);
 
-        yayJButton submitFileNameButton = new yayJButton(20,"Import Album");
-        setUpThisButton(submitFileNameButton,20,myGreen,cmu_serif_18);
+        yayJButton submitFileNameButton = new yayJButton(20, "Import Album");
+        setUpThisButton(submitFileNameButton, 20, myGreen, cmu_serif_18);
         submitFileNameButton.addActionListener(e -> {
             String returnedString = readFile(fileNameField.getText());
             if (!returnedString.equals("Album import successful!")) {
@@ -1565,7 +1608,8 @@ public class Main implements ActionListener {
         removeAlbumPanel.setPreferredSize(new Dimension(700, height));
 
         JLabel label1 = new JLabel("Choose removal method:");
-        label1.setBounds(xCo + 4, (int) Math.round(splitIntoParts * 0.25), componentWidth, (int) Math.round(splitIntoParts * 0.5));
+        label1.setBounds(xCo + 4, (int) Math.round(splitIntoParts * 0.25), componentWidth,
+                (int) Math.round(splitIntoParts * 0.5));
         label1.setFont(cmu_serif_18);
 
         JRadioButton radio1 = new JRadioButton("By number");
@@ -1573,7 +1617,8 @@ public class Main implements ActionListener {
         radio1.setFont(cmu_serif_18);
 
         JRadioButton radio2 = new JRadioButton("By date");
-        radio2.setBounds(xCo, (int) Math.round(splitIntoParts * 1.75), componentWidth, (int) Math.round(splitIntoParts * 0.5));
+        radio2.setBounds(xCo, (int) Math.round(splitIntoParts * 1.75), componentWidth,
+                (int) Math.round(splitIntoParts * 0.5));
         radio2.setFont(cmu_serif_18);
 
         ButtonGroup group = new ButtonGroup();
@@ -1600,8 +1645,8 @@ public class Main implements ActionListener {
         errorPaneSetUp(errorPane);
         errorPane.setBounds(xCo, (int) Math.round(splitIntoParts * 5.25), componentWidth, splitIntoParts);
 
-        yayJButton removeAlbumButton = new yayJButton(20,"Remove Albums");
-        setUpThisButton(removeAlbumButton,20,myGreen,cmu_serif_20);
+        yayJButton removeAlbumButton = new yayJButton(20, "Remove Albums");
+        setUpThisButton(removeAlbumButton, 20, myGreen, cmu_serif_20);
         removeAlbumButton.addActionListener(e -> {
             String input = textField.getText();
             if (radio1.isSelected()) { // number
@@ -1651,7 +1696,8 @@ public class Main implements ActionListener {
         removeAlbumTextPane.setFont(cmu_serif_18);
         removeAlbumTextPane.setEditable(false);
         JScrollPane displayScrollPane = new JScrollPane(removeAlbumTextPane);
-        displayScrollPane.setBounds(xCo + componentWidth + 25, (int) Math.round(splitIntoParts * 0.25), 700 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((height * 7.25) / 7.75));
+        displayScrollPane.setBounds(xCo + componentWidth + 25, (int) Math.round(splitIntoParts * 0.25),
+                700 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((height * 7.25) / 7.75));
         printNameDateAllAlbums(removeAlbumTextPane);
         displayScrollPane.setVisible(true);
         removeAlbumTextPane.setVisible(true);
@@ -1675,7 +1721,7 @@ public class Main implements ActionListener {
     }
 
     public String removeAlbumNum (String input) {
-        String errorName = validInt(input,1,Integer.MAX_VALUE);
+        String errorName = validInt(input, 1, Integer.MAX_VALUE);
         if (errorName.isEmpty()) { // success!, valid integer
             int validInt = (int) Double.parseDouble(input.trim());
             if (!duplicateAlbumNum(validInt)) { // not an imported album, but is an integer
@@ -1747,7 +1793,8 @@ public class Main implements ActionListener {
     private record RoundedBorder(int radius, int thickness) implements Border {
 
         public Insets getBorderInsets (Component c) {
-            return new Insets(this.radius + thickness, this.radius + thickness, this.radius + thickness, this.radius + thickness);
+            return new Insets(this.radius + thickness, this.radius + thickness,
+                    this.radius + thickness, this.radius + thickness);
         }
 
         public boolean isBorderOpaque () {
@@ -1759,7 +1806,8 @@ public class Main implements ActionListener {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(Color.BLACK); // This will set the border color to red
             g2.setStroke(new BasicStroke(this.thickness));
-            g2.drawRoundRect(x + thickness / 2, y + thickness / 2, width - thickness, height - thickness, radius, radius);
+            g2.drawRoundRect(x + thickness / 2, y + thickness / 2, width - thickness,
+                    height - thickness, radius, radius);
         }
     }
 
@@ -1774,12 +1822,15 @@ public class Main implements ActionListener {
             return getUI().getPreferredSize(this);
         }
     }
+
     public static class yayJButton extends JButton {
         int buttonRounding;
+
         public yayJButton (int buttonRounding, String text) {
             super(text);
             this.buttonRounding = buttonRounding;
         }
+
         // This paintComponent method fills the button with a round rectangle.
         @Override
         protected void paintComponent (Graphics g) {

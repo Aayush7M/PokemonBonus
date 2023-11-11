@@ -35,6 +35,7 @@ public class Card implements Comparable <Card> {
     public Attack getAttack (int index) {
         return attacks[index];
     }
+
     public int getAttacksLength () {
         return attacks.length;
     }
@@ -61,11 +62,12 @@ public class Card implements Comparable <Card> {
 
     public String toString () {
         StringBuilder returnString = new StringBuilder(String.format("Name: %s%nHP: %d%nType: %s%nDate: %s%nAttacks: %n", name, HP, type, date));
-        for (int i = 0; i < attacks.length ; i++) {
-            returnString.append("\tAttack ").append(i+1).append(":\n").append(attacks[i].tabbedToString()).append("\n");
+        for (int i = 0; i < attacks.length; i++) {
+            returnString.append("\tAttack ").append(i + 1).append(":\n").append(attacks[i].tabbedToString()).append("\n");
         }
         return returnString.toString();
     }
+
     // equals method
     public boolean equals (Object o) {
         if (!(o instanceof Card c)) {

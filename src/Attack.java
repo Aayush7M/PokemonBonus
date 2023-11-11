@@ -14,6 +14,7 @@ public class Attack implements Comparable <Attack> {
     public String toString () {
         return String.format("Name: %s%nDescription: %s%nDamage: %s", name, description, damage);
     }
+
     public String tabbedToString () {
         return String.format("\t\tName: %s%n\t\tDescription: %s%n\t\tDamage: %s", name, description, damage);
     }

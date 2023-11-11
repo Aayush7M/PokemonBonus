@@ -2,17 +2,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Album implements Comparable <Album> {
+    // static variables
+    private static int collectionNumOfCards;
+    private static int collectionCapacity;
+    private static int collectionHP;
     // instance variables
     private final int albumNum;
     private final Date date;
     private ArrayList <Card> cards;
     private int maxCapacity;
     private int albumHP;
-
-    // static variables
-    private static int collectionNumOfCards;
-    private static int collectionCapacity;
-    private static int collectionHP;
 
     // constructors
     public Album (int albumNum, ArrayList <Card> cards, int maxCapacity, Date date) {
@@ -33,6 +32,13 @@ public class Album implements Comparable <Album> {
         this.date = date;
     }
 
+    public static String collectionStatistics () {
+        return String.format("Collection Statistics: %n\t\t%d cards out of %d%n\t\tAverage HP: %.3f%n",
+                collectionNumOfCards,
+                collectionCapacity,
+                ((double) collectionHP / ((collectionNumOfCards == 0) ? 1 : collectionNumOfCards)));
+    }
+
     // getters
     public Date getDate () {
         return date;
@@ -48,18 +54,13 @@ public class Album implements Comparable <Album> {
         collectionCapacity -= maxCapacity;
         collectionHP -= albumHP;
     }
-    public static String collectionStatistics () {
-        return String.format("Collection Statistics: %n\t\t%d cards out of %d%n\t\tAverage HP: %.3f%n",
-                collectionNumOfCards,
-                collectionCapacity,
-                ((double) collectionHP / ((collectionNumOfCards==0)?1:collectionNumOfCards)));
-    }
+
     public String albumStatistics () { // average HP of THIS ALBUM
         return String.format("Album %d Statistics: %n\t\t%d cards out of %d%n\t\tAverage HP: %.3f%n",
                 albumNum,
                 cards.size(),
                 maxCapacity,
-                ((double) albumHP / ((cards.isEmpty())?1:cards.size())));
+                ((double) albumHP / ((cards.isEmpty()) ? 1 : cards.size())));
     }
 
     public String printNameDateAllCards () {
@@ -108,11 +109,11 @@ public class Album implements Comparable <Album> {
     }
 
     public int getCardIndexOfName (String name) {
-        return cards.indexOf(new Card(name,-1));
+        return cards.indexOf(new Card(name, -1));
     }
 
     public int getCardIndexOfHP (int hp) {
-        return cards.indexOf(new Card("",hp));
+        return cards.indexOf(new Card("", hp));
     }
 
     public Card getCard (int index) {
