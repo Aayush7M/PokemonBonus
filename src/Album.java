@@ -62,17 +62,21 @@ public class Album implements Comparable <Album> {
                 ((double) albumHP / ((cards.isEmpty())?1:cards.size())));
     }
 
-    public void printNameDateAllCards () {
-        for (int i = 0; i < cards.size(); i++) {
-            System.out.println((i + 1) + ": ");
-            System.out.println(cards.get(i).nameDateToString() + "\n");
+    public String printNameDateAllCards () {
+        StringBuilder returnString = new StringBuilder();
+        for (Card card : cards) {
+            returnString.append(card.nameDateToString()).append("\n\n");
         }
+        return returnString.toString();
     }
 
-    public void printAllInfoAllCards () {
+    public String printAllInfoAllCards () {
+
+        StringBuilder returnString = new StringBuilder();
         for (Card card : cards) {
-            System.out.println(card + "\n");
+            returnString.append(card).append("\n\n");
         }
+        return returnString.toString();
     }
 
     public void addCard (Card c) {

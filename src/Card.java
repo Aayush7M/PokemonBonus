@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Card implements Comparable <Card> {
     private final String name;
     private final int HP;
@@ -34,23 +32,11 @@ public class Card implements Comparable <Card> {
         return date;
     }
 
-    public Attack[] getAttacks () {
-        return attacks;
-    }
-
     public Attack getAttack (int index) {
         return attacks[index];
     }
     public int getAttacksLength () {
         return attacks.length;
-    }
-    // method
-
-    public void printAttacks () {
-        for (int i = 0; i < attacks.length; i++) {
-            System.out.println((i + 1) + ": ");
-            System.out.println(attacks[i] + "\n");
-        }
     }
 
     // comparable
@@ -58,7 +44,7 @@ public class Card implements Comparable <Card> {
         int nameResult = new SortCardsByName().compare(this, c);
         if (nameResult == 0) { // name is same
             int dateResult = new SortCardsByDate().compare(this, c);
-            if (dateResult == 0) { // date is same
+            if (dateResult == 0) { // date is the same
                 return new SortCardsByHP().compare(this, c); // check hp
             } else {
                 return dateResult;

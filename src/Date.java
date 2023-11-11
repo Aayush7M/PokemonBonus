@@ -16,7 +16,7 @@ public class Date implements Comparable <Date> {
 
 
     // methods
-    public static boolean validMonthDayYearTriplet (int[] parsedDate) {
+    public static boolean invalidMonthDayYearTriplet (int[] parsedDate) {
         int month = parsedDate[0];
         int day = parsedDate[1];
         int year = parsedDate[2];
@@ -25,31 +25,31 @@ public class Date implements Comparable <Date> {
         int[] daysInMonths = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         // invalid month or year
         if (day<1 || month < 1 || month > 12 || year < 1996 || year > currentYear) {
-            return false;
+            return true;
         } else if (year == 1996) { // check if day is before Pokémon creation
             if (month < 10) { // month is before october
-                return false;
+                return true;
             } else if (month == 10) {
-                return day >= 20;
+                return day < 20;
             }
         } else { // invalid day
 
             if (day > daysInMonths[month - 1]) {
-                return false;
+                return true;
             }
         }
         if (year == currentYear) { // year is the current year
             int currentMonth = YearMonth.now().getMonthValue();
             if (month > currentMonth) { // month is in the future
-                return false;
+                return true;
             } else if (month == currentMonth) { // month is the current month
                 // check if day is the current day or in the past
-                return day <= MonthDay.now().getDayOfMonth();
+                return day > MonthDay.now().getDayOfMonth();
             } else { // month is in the past
-                return true;
+                return false;
             }
         }
-        return true;
+        return false;
     }
 
     // to string

@@ -36,10 +36,10 @@ public class Main implements ActionListener {
 
 
     public Main () {
-//        readFile("1");
-//        readFile("2");
-//        readFile("3");
-//        readFile("4", albums);
+        readFile("1");
+        readFile("2");
+        readFile("3");
+        readFile("4");
         readFile("5");
         mainPanel = new JPanel();
         mainFrame = new JFrame();
@@ -298,7 +298,7 @@ public class Main implements ActionListener {
                     case 1: // Display all cards (in the last sorted order)
                         System.out.println("m2o1 picked");
                         showTheTextPane(cardMenu, 1, width, height);
-                        printCards(mainDisplayTextPane, cards,false);
+                        printCards(mainDisplayTextPane, currentAlbum,false);
                         break;
                     case 2: // Display info on a particular card
                         System.out.println("m1o2 picked");
@@ -320,21 +320,24 @@ public class Main implements ActionListener {
                         System.out.println("m2o5");
                         chooseFromAList(myBlue, false, "card",100);
                         if (cardIndexChosen != -1) {
-                            chooseFromAList(myBlue, true, "attack",125);
+                            if (currentAlbum.getCard(cardIndexChosen).getAttacksLength()==1) {
+                                oneAttackInCard();
+                                attackIndexChosen = 0;
+                            } else {
+                                chooseFromAList(myBlue, true, "attack",125);
+                            }
                             if (attackIndexChosen!=-1) {
                                 editAttack(currentAlbum.getCard(cardIndexChosen));
-                                System.out.println("yay");
                             }
                         }
                         break;
-                        //editAttack(in, getExistingCard(in, currentAlbum));
                     case 6: // Sort cards (3 options)
                         System.out.println("m2o6");
                         chooseFromAList(myBlue, false, "sort",50);
                         if (sortIndexChosen != -1) {
                             sortCards(currentAlbum);
                             showTheTextPane(cardMenu, 1, width, height);
-                            printCards(mainDisplayTextPane, cards,true);
+                            printCards(mainDisplayTextPane, currentAlbum,true);
                         }
                         break;
                     case 7:
@@ -352,6 +355,12 @@ public class Main implements ActionListener {
                         break;
                     case 10: // edit only card
                         System.out.println("m2o5 only one card");
+                        if (currentAlbum.getCard(cardIndexChosen).getAttacksLength()==1) {
+                            oneAttackInCard();
+                            attackIndexChosen = 0;
+                        } else {
+                            chooseFromAList(myBlue, true, "attack",125);
+                        }
                         editAttack(currentAlbum.getCard(0));
                         break;
                     case 11: // sorting won't do anything
@@ -417,15 +426,25 @@ public class Main implements ActionListener {
             case 2 -> currentAlbum.sortCardsByDate();
         }
     }
+    public void errorPaneSetUp(JTextPane errorPane){
+        StyledDocument doc = errorPane.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        errorPane.setBackground(new Color(236, 236, 236));
+        errorPane.setFont(cmu_serif_18);
+        errorPane.setForeground(Color.red);
+        errorPane.setEditable(false);
+    }
     public void editAttack (Card card) {
-        JDialog editAttackDialog = new JDialog(mainFrame, "Remove Card", true);
+        JDialog editAttackDialog = new JDialog(mainFrame, "Edit Attack", true);
         JPanel editAttackPanel = new JPanel();
         editAttackPanel.setLayout(null);
         int componentWidth = 300;
         int xCo = 50;
 
-        editAttackDialog.setPreferredSize(new Dimension(400, 435 + 28));
-        editAttackPanel.setPreferredSize(new Dimension(400, 435));
+        editAttackDialog.setPreferredSize(new Dimension(400, 400 + 28));
+        editAttackPanel.setPreferredSize(new Dimension(400, 400));
 
         int radioHeight = 35;
         JLabel label1 = new JLabel("What would you like to change?");
@@ -450,23 +469,24 @@ public class Main implements ActionListener {
         group.add(radio3);
 
         JLabel label2 = new JLabel();
-        label2.setBounds(xCo + 4, 200, componentWidth, 50);
+        label2.setBounds(xCo + 4, 165, componentWidth, 50);
         label2.setFont(cmu_serif_18);
         label2.setVisible(false);
 
         JTextField textField = new JTextField();
-        textField.setBounds(xCo, 250, componentWidth, 50);
+        textField.setBounds(xCo, 215, componentWidth, 50);
         textField.setFont(cmu_serif_18);
         textField.setVisible(false);
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setEditable(false);
 
-        JLabel errorLabel = new JLabel();
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setHorizontalAlignment(JLabel.CENTER);
-        errorLabel.setFont(cmu_serif_18);
-        errorLabel.setOpaque(true);
-        errorLabel.setBounds(xCo, 310, componentWidth, 50);
+        JTextPane errorPane = new JTextPane() {
+            public boolean getScrollableTracksViewportWidth () {
+                return true;
+            }
+        };
+        errorPaneSetUp(errorPane);
+        errorPane.setBounds(xCo, 275, componentWidth, 50);
 
         yayJButton removeCardButton = new yayJButton(20,"Edit Attack");
         setUpThisButton(removeCardButton,20,myBlue,cmu_serif_20);
@@ -475,7 +495,7 @@ public class Main implements ActionListener {
             if (radio1.isSelected()) { // number
                 String errorName = validString(input, true);
                 if (!errorName.isEmpty()) { // invalid input
-                    errorLabel.setText(errorName);
+                    errorPane.setText(errorName);
                 } else {
                     card.getAttack(attackIndexChosen).edit("name",input);
                     editAttackDialog.dispose();
@@ -483,7 +503,7 @@ public class Main implements ActionListener {
             } else if (radio2.isSelected()) { //date
                 String errorName = validString(input, false);
                 if (!errorName.isEmpty()) { // invalid input
-                    errorLabel.setText(errorName);
+                    errorPane.setText(errorName);
                 } else {
                     card.getAttack(attackIndexChosen).edit("description",input);
                     editAttackDialog.dispose();
@@ -491,7 +511,7 @@ public class Main implements ActionListener {
             } else if (radio3.isSelected()) { //date
                 String errorName = validString(input, true);
                 if (!errorName.isEmpty()) { // invalid input
-                    errorLabel.setText(errorName);
+                    errorPane.setText(errorName);
                 } else {
                     card.getAttack(attackIndexChosen).edit("damage",input);
                     editAttackDialog.dispose();
@@ -500,7 +520,7 @@ public class Main implements ActionListener {
 
         });
         removeCardButton.setVisible(false);
-        removeCardButton.setBounds(xCo, 370, componentWidth, 50);
+        removeCardButton.setBounds(xCo, 335, componentWidth, 50);
 
         radio1.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -536,16 +556,13 @@ public class Main implements ActionListener {
             }
         });
 
-
-
-
         editAttackPanel.add(label1);
         editAttackPanel.add(radio1);
         editAttackPanel.add(radio2);
         editAttackPanel.add(radio3);
         editAttackPanel.add(label2);
         editAttackPanel.add(textField);
-        editAttackPanel.add(errorLabel);
+        editAttackPanel.add(errorPane);
         editAttackPanel.add(removeCardButton);
         editAttackDialog.add(editAttackPanel);
 
@@ -915,8 +932,8 @@ public class Main implements ActionListener {
         int xCo = 50;
         int splitIntoParts = 52;
 
-        removeCardDialog.setPreferredSize(new Dimension(700, 435 + 28));
-        removeCardPanel.setPreferredSize(new Dimension(700, 435));
+        removeCardDialog.setPreferredSize(new Dimension(850, 435 + 28));
+        removeCardPanel.setPreferredSize(new Dimension(850, 435));
 
         int radioHeight = 35;
         JLabel label1 = new JLabel("Choose removal method:");
@@ -957,12 +974,13 @@ public class Main implements ActionListener {
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setEditable(false);
 
-        JLabel errorLabel = new JLabel();
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setHorizontalAlignment(JLabel.CENTER);
-        errorLabel.setFont(cmu_serif_18);
-        errorLabel.setOpaque(true);
-        errorLabel.setBounds(xCo, 310, componentWidth, 50);
+        JTextPane errorPane = new JTextPane() {
+            public boolean getScrollableTracksViewportWidth () {
+                return true;
+            }
+        };
+        errorPaneSetUp(errorPane);
+        errorPane.setBounds(xCo, 310, componentWidth, 50);
 
         yayJButton removeCardButton = new yayJButton(20,"Remove Cards");
         setUpThisButton(removeCardButton,20,myBlue,cmu_serif_20);
@@ -971,14 +989,14 @@ public class Main implements ActionListener {
             if (radio1.isSelected()) { // number
                 String result = removeCardName(input, currentAlbum);
                 if (!result.equals("success")) {
-                    errorLabel.setText(result);
+                    errorPane.setText(result);
                 } else {
                     removeCardDialog.dispose();
                 }
             } else if (radio2.isSelected()) { //date
                 String result = removeCardHP(input, currentAlbum);
                 if (!result.equals("success")) {
-                    errorLabel.setText(result);
+                    errorPane.setText(result);
                 } else {
                     removeCardDialog.dispose();
                 }
@@ -1039,8 +1057,8 @@ public class Main implements ActionListener {
         removeCardTextPane.setFont(cmu_serif_18);
         removeCardTextPane.setEditable(false);
         JScrollPane displayScrollPane = new JScrollPane(removeCardTextPane);
-        displayScrollPane.setBounds(xCo + componentWidth + 25, (int) Math.round(splitIntoParts * 0.25), 700 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((435 * 7.25) / 7.75));
-        printCards(removeCardTextPane,currentAlbum.getCards(),true);
+        displayScrollPane.setBounds(xCo + componentWidth + 25, (int) Math.round(splitIntoParts * 0.25), 850 - 375 - (int) Math.round(splitIntoParts * 0.25), (int) Math.round((435 * 7.25) / 7.75));
+        printCards(removeCardTextPane,currentAlbum,true);
         displayScrollPane.setVisible(true);
         removeCardTextPane.setVisible(true);
 
@@ -1052,7 +1070,7 @@ public class Main implements ActionListener {
         removeCardPanel.add(radio4);
         removeCardPanel.add(label2);
         removeCardPanel.add(textField);
-        removeCardPanel.add(errorLabel);
+        removeCardPanel.add(errorPane);
         removeCardPanel.add(displayScrollPane);
         removeCardPanel.add(removeCardButton);
         removeCardDialog.add(removeCardPanel);
@@ -1170,6 +1188,12 @@ public class Main implements ActionListener {
         JOptionPane.showMessageDialog(null, label, "One Album imported", JOptionPane.INFORMATION_MESSAGE, happyPikachu);
         albumIndexChosen = 0;
     }
+    public void oneAttackInCard () {
+        JLabel label = new JLabel("<html> Only one attack in card, <br> so that attack has been <br> automatically chosen. </html>");
+        label.setFont(cmu_serif_18);
+        JOptionPane.showMessageDialog(null, label, "One Album imported", JOptionPane.INFORMATION_MESSAGE, happyPikachu);
+        albumIndexChosen = 0;
+    }
 
     public void oneCardInAlbum () {
         JLabel label = new JLabel("<html> Only one card in album, <br> so that card has been <br> automatically chosen </html>");
@@ -1182,6 +1206,7 @@ public class Main implements ActionListener {
                 "of sorting is chosen. Close <br> this window to see <br> the only card in the album </html>");
         label.setFont(cmu_serif_18);
         JOptionPane.showMessageDialog(null, label, "One Card in Album", JOptionPane.INFORMATION_MESSAGE, happyPikachu);
+        cardIndexChosen = 0;
     }
 
     public void noAlbumsImported () {
@@ -1224,7 +1249,10 @@ public class Main implements ActionListener {
         System.out.println("calculatedFont = " + calculatedFont);
         backButton.setBounds(xCo, buttonYCo, componentWidth, buttonHeight);
         Font buttonFont = new Font("CMU Serif", Font.BOLD, calculatedFont);
-        Font paneFont = new Font("CMU Serif", Font.PLAIN, calculatedFont-6);
+        double interesting = calculatedFont-3.0*(1.0+0.01*calculatedFont);
+        int weirdNum = (int) Math.round (interesting);
+        Font paneFont = new Font("CMU Serif", Font.PLAIN, weirdNum);
+        System.out.println( interesting+ " vs " + (calculatedFont-6));
         backButton.setFont(buttonFont);
         mainDisplayScrollPane.setBounds(xCo, paneYCo, componentWidth, paneHeight);
         mainDisplayTextPane.setFont(paneFont);
@@ -1254,13 +1282,11 @@ public class Main implements ActionListener {
 
     public void printStatistics (JTextPane useThisTextPane) {
         useThisTextPane.setText("");
-        try {
-            for (Album album : albums) {
-                appendString(album.albumStatistics() + "\n", useThisTextPane);
-            }
-            appendString(Album.collectionStatistics() + "\n", useThisTextPane);
-        } catch (BadLocationException ignored) {
+        for (Album album : albums) {
+            appendString(album.albumStatistics() + "\n", useThisTextPane);
         }
+        appendString(Album.collectionStatistics() + "\n", useThisTextPane);
+
     }
     public String chooseHelperGetText (String title, int i, boolean allInfo){
         switch(title) {
@@ -1302,9 +1328,17 @@ public class Main implements ActionListener {
             default -> -1;
         };
     }
+    public int chooseHelperButtonRounding (String title){
+        if (title.equals("sort")) {
+            return 30;
+        } else {
+            return buttonRounding;
+        }
+    }
 
     public void chooseFromAList (Color buttonColor, boolean allData, String title, int buttonHeight) {
         chooseHelperAssignI(title, -1);
+        int buttonRounding = chooseHelperButtonRounding(title);
         int numOfButtons = chooseHelperNumOfButtons(title);
         JDialog chooseDialog = new JDialog(mainFrame, "Choose the " + title + " please", true);
         JPanel choosePanel = new JPanel();
@@ -1417,43 +1451,31 @@ public class Main implements ActionListener {
     public void printNameDateAllAlbums (JTextPane useThisTextPane) {
         useThisTextPane.setText("");
         for (Album album : albums) {
-            try {
-                appendString(album.nameDateToString() + "\n", useThisTextPane);
-            } catch (BadLocationException ignored) {
-            }
+            appendString(album.nameDateToString() + "\n", useThisTextPane);
         }
     }
 
-    public void printCards (JTextPane useThisTextPane, ArrayList <Card> cards, boolean allData) {
+    public void printCards (JTextPane useThisTextPane, Album currentAlbum, boolean allData) {
         useThisTextPane.setText("");
-        for (Card card : cards) {
-            try {
-                appendString(allData?card.toString():card.nameDateToString() + "\n\n", useThisTextPane);
-            } catch (BadLocationException ignored) {
-            }
-        }
+        appendString(allData?currentAlbum.printAllInfoAllCards():currentAlbum.printNameDateAllCards(), useThisTextPane);
     }
 
     public void printAlbum () {
         mainDisplayTextPane.setText("");
-        try {
-            appendString(albums.get(albumIndexChosen) + "\n", mainDisplayTextPane);
-        } catch (BadLocationException ignored) {
-        }
+        appendString(albums.get(albumIndexChosen) + "\n", mainDisplayTextPane);
     }
 
     public void printCard (ArrayList <Card> cards) {
         mainDisplayTextPane.setText("");
-        try {
-            appendString(cards.get(cardIndexChosen) + "\n", mainDisplayTextPane);
-        } catch (BadLocationException ignored) {
-        }
+        appendString(cards.get(cardIndexChosen) + "\n", mainDisplayTextPane);
     }
 
 
-    public void appendString (String str, JTextPane useThisTextPane) throws BadLocationException {
-        StyledDocument document = (StyledDocument) useThisTextPane.getDocument();
-        document.insertString(document.getLength(), str, null);
+    public void appendString (String str, JTextPane useThisTextPane) {
+        try {
+            StyledDocument document = (StyledDocument) useThisTextPane.getDocument();
+            document.insertString(document.getLength(), str, null);
+        } catch (BadLocationException ignored) {}
     }
 
     public void showTheTextPane (yayJButton[] buttonsToHide, int backButtonToShow, int width, int height) {
@@ -1570,12 +1592,13 @@ public class Main implements ActionListener {
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setEditable(false);
 
-        JLabel errorLabel = new JLabel();
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setHorizontalAlignment(JLabel.CENTER);
-        errorLabel.setFont(cmu_serif_18);
-        errorLabel.setOpaque(true);
-        errorLabel.setBounds(xCo, (int) Math.round(splitIntoParts * 5.25), componentWidth, splitIntoParts);
+        JTextPane errorPane = new JTextPane() {
+            public boolean getScrollableTracksViewportWidth () {
+                return true;
+            }
+        };
+        errorPaneSetUp(errorPane);
+        errorPane.setBounds(xCo, (int) Math.round(splitIntoParts * 5.25), componentWidth, splitIntoParts);
 
         yayJButton removeAlbumButton = new yayJButton(20,"Remove Albums");
         setUpThisButton(removeAlbumButton,20,myGreen,cmu_serif_20);
@@ -1584,14 +1607,14 @@ public class Main implements ActionListener {
             if (radio1.isSelected()) { // number
                 String result = removeAlbumNum(input);
                 if (!result.equals("success")) {
-                    errorLabel.setText(result);
+                    errorPane.setText(result);
                 } else {
                     removeAlbumDialog.dispose();
                 }
             } else if (radio2.isSelected()) { //date
                 String result = removeAlbumDate(input);
                 if (!result.equals("success")) {
-                    errorLabel.setText(result);
+                    errorPane.setText(result);
                 } else {
                     removeAlbumDialog.dispose();
                 }
@@ -1639,7 +1662,7 @@ public class Main implements ActionListener {
         removeAlbumPanel.add(radio2);
         removeAlbumPanel.add(label2);
         removeAlbumPanel.add(textField);
-        removeAlbumPanel.add(errorLabel);
+        removeAlbumPanel.add(errorPane);
         removeAlbumPanel.add(displayScrollPane);
         removeAlbumPanel.add(removeAlbumButton);
         removeAlbumDialog.add(removeAlbumPanel);
@@ -1707,7 +1730,7 @@ public class Main implements ActionListener {
         parsedDate = parseDate(input);
         if (parsedDate.length == 0) {
             return "ERROR! Your input had invalid characters.";
-        } else if (!Date.validMonthDayYearTriplet(parsedDate)) {
+        } else if (Date.invalidMonthDayYearTriplet(parsedDate)) {
             return "ERROR! Your date was invalid.";
         }
         return "";
