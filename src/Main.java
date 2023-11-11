@@ -608,8 +608,9 @@ public class Main implements ActionListener {
         } else {
             JDialog importCardDialog = new JDialog(mainFrame, "Add Card", true);
             JPanel importCardPanel = new JPanel();
-            importCardDialog.setPreferredSize(new Dimension(500 + 19, 750 + 28 + 20));
-            importCardPanel.setPreferredSize(new Dimension(500, 750));
+            int height = 765;
+            importCardDialog.setPreferredSize(new Dimension(500 + 19, height + 28 + 20));
+            importCardPanel.setPreferredSize(new Dimension(500, height));
             importCardPanel.setLayout(null);
             JScrollPane importCardScrollPane = new JScrollPane(importCardPanel);
             JLabel[] promptLabels = new JLabel[5];
@@ -623,8 +624,9 @@ public class Main implements ActionListener {
             JLabel[] attackErrorLabels = new JLabel[20];
             JTextField[] attackInputFields = new JTextField[30];
 
+            int startAttackAt = 445;
             makeAttackForm(attackPromptNumLabels, attackPromptTypeLabels, attackInputFields, attackErrorLabels,
-                    importCardPanel, 570, 10);
+                    importCardPanel, startAttackAt, 10);
 
             yayJButton submitCardButton = new yayJButton(20, "Import Album");
             setUpThisButton(submitCardButton, 20, myBlue, cmu_serif_20);
@@ -662,7 +664,7 @@ public class Main implements ActionListener {
                 importCardDialog.dispose();
             });
             submitCardButton.setVisible(false);
-            submitCardButton.setBounds(15, 570, 480, 50);
+            submitCardButton.setBounds(15, 445, 480, 50);
 
             inputFields[4].getDocument().addDocumentListener(new DocumentListener() {
                 @Override
@@ -689,9 +691,9 @@ public class Main implements ActionListener {
                             attackErrorLabels[i * 2 + 1].setVisible(false);
                         }
                         submitCardButton.setVisible(true);
-                        submitCardButton.setBounds(15, 570 + 315 * value, 480, 50);
-                        importCardPanel.setPreferredSize(new Dimension(500, 570 + 65 + 315 * value));
-                        importCardScrollPane.setPreferredSize(new Dimension(500, 570 + 65 + 315 * value));
+                        submitCardButton.setBounds(15, startAttackAt + 275 * value, 480, 50);
+                        importCardPanel.setPreferredSize(new Dimension(500, startAttackAt + 65 + 275 * value));
+                        importCardScrollPane.setPreferredSize(new Dimension(500, startAttackAt + 65 + 275 * value));
                     } else {
                         for (int i = 0; i < 10; i++) {
                             attackPromptNumLabels[i].setVisible(false);
@@ -703,8 +705,8 @@ public class Main implements ActionListener {
                             attackErrorLabels[i * 2 + 1].setVisible(false);
                         }
                         submitCardButton.setVisible(false);
-                        importCardPanel.setPreferredSize(new Dimension(500, 750));
-                        importCardScrollPane.setPreferredSize(new Dimension(500, 750));
+                        importCardPanel.setPreferredSize(new Dimension(500, height));
+                        importCardScrollPane.setPreferredSize(new Dimension(500, height));
                     }
                 }
 
@@ -720,7 +722,7 @@ public class Main implements ActionListener {
             });
 
             importCardPanel.add(submitCardButton);
-            importCardScrollPane.setPreferredSize(new Dimension(500, 750));
+            importCardScrollPane.setPreferredSize(new Dimension(500, height));
             importCardScrollPane.setOpaque(false);
             importCardScrollPane.getViewport().setOpaque(false);
             importCardScrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -738,20 +740,20 @@ public class Main implements ActionListener {
         for (int i = 0; i < 5; i++) {
 
             promptLabels[i] = new JLabel(prompts[i] + ": ");
-            promptLabels[i].setBounds(15, 20 + i * 110, 210, 50);
+            promptLabels[i].setBounds(15, 20 + i * 85, 210, 50);
             promptLabels[i].setFont(cmu_serif_18);
             promptLabels[i].setHorizontalAlignment(JLabel.CENTER);
             promptLabels[i].setOpaque(true);
             importCardPanel.add(promptLabels[i]);
 
             inputFields[i] = new JTextField();
-            inputFields[i].setBounds(15 + 210, 20 + i * 110, 275, 50);
+            inputFields[i].setBounds(15 + 210, 20 + i * 85, 275, 50);
             inputFields[i].setHorizontalAlignment(JTextField.CENTER);
             inputFields[i].setFont(cmu_serif_18);
             importCardPanel.add(inputFields[i]);
 
             errorLabels[i] = new JLabel();
-            errorLabels[i].setBounds(15, 20 + 50 + i * 110, 480, 50);
+            errorLabels[i].setBounds(15, 20 + 50 + i * 85, 480, 35);
             errorLabels[i].setForeground(Color.RED);
             errorLabels[i].setHorizontalAlignment(JLabel.CENTER);
             errorLabels[i].setFont(cmu_serif_18);
@@ -830,10 +832,10 @@ public class Main implements ActionListener {
         for (int i = 0; i < numOfAttacks; i++) {
             int three = i * 3;
             int two = i * 2;
-            int shiftBy = i * 315;
+            int shiftBy = i * 275;
 
             attackPromptNumLabels[i] = new JLabel("Enter Attack #" + (i + 1) + ": ");
-            attackPromptNumLabels[i].setBounds(15, startYVal + shiftBy, 480, 50);
+            attackPromptNumLabels[i].setBounds(15, startYVal + shiftBy, 480, 40);
             attackPromptNumLabels[i].setFont(cmu_serif_18);
             attackPromptNumLabels[i].setHorizontalAlignment(JLabel.CENTER);
             attackPromptNumLabels[i].setOpaque(true);
@@ -859,7 +861,7 @@ public class Main implements ActionListener {
 
             // Name Error Label
             attackErrorLabels[two] = new JLabel();
-            attackErrorLabels[two].setBounds(15, startYVal + 100 + shiftBy, 480, 50);
+            attackErrorLabels[two].setBounds(15, startYVal + 100 + shiftBy, 480, 35);
             attackErrorLabels[two].setForeground(Color.RED);
             attackErrorLabels[two].setHorizontalAlignment(JLabel.CENTER);
             attackErrorLabels[two].setFont(cmu_serif_18);
@@ -889,9 +891,9 @@ public class Main implements ActionListener {
             two++;
             three++;
             for (int j = 0; j < 2; j++, three++) {
-                int yVal = startYVal + (50 * (j + 3)) + (5 * j) + shiftBy;
+                int yVal = startYVal + (40 + 50 + 35 + j*50) + shiftBy;
                 // description or damage:
-                attackPromptTypeLabels[three] = new JLabel(j == 0 ? "Description" : "Damage" + ": ");
+                attackPromptTypeLabels[three] = new JLabel((j == 0 ? "Description" : "Damage") + ": ");
                 attackPromptTypeLabels[three].setBounds(15, yVal, 120, 50);
                 attackPromptTypeLabels[three].setFont(cmu_serif_18);
                 attackPromptTypeLabels[three].setHorizontalAlignment(JLabel.CENTER);
@@ -909,7 +911,7 @@ public class Main implements ActionListener {
             }
             // Damage Error Label
             attackErrorLabels[two] = new JLabel();
-            attackErrorLabels[two].setBounds(15, startYVal + 255 + shiftBy, 480, 50);
+            attackErrorLabels[two].setBounds(15, startYVal + 230 + shiftBy, 480, 35);
             attackErrorLabels[two].setForeground(Color.RED);
             attackErrorLabels[two].setHorizontalAlignment(JLabel.CENTER);
             attackErrorLabels[two].setFont(cmu_serif_18);
