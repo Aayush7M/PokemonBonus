@@ -39,9 +39,9 @@ public class Main implements ActionListener {
 
 
     public Main () {
-        readFile("1");
-        readFile("2");
-        readFile("3");
+//        readFile("1");
+//        readFile("2");
+//        readFile("3");
         readFile("4");
         readFile("5");
         mainPanel = new JPanel();
@@ -297,7 +297,7 @@ public class Main implements ActionListener {
                         printCards(mainDisplayTextPane, currentAlbum, false);
                         break;
                     case 2: // Display info on a particular card
-                        System.out.println("m1o2 picked");
+                        System.out.println("m2o2 picked");
                         chooseFromAList(myBlue, false, "card", 100);
                         if (cardIndexChosen != -1) {
                             showTheTextPane(cardMenu, 1, width, height);
@@ -318,9 +318,8 @@ public class Main implements ActionListener {
                         if (cardIndexChosen != -1) {
                             if (currentAlbum.getCard(cardIndexChosen).getAttacksLength() == 1) {
                                 oneAttackInCard();
-                                attackIndexChosen = 0;
                             } else {
-                                chooseFromAList(myBlue, true, "attack", 125);
+                                chooseFromAList(myBlue, true, "attack", 150);
                             }
                             if (attackIndexChosen != -1) {
                                 editAttack(currentAlbum.getCard(cardIndexChosen));
@@ -351,11 +350,10 @@ public class Main implements ActionListener {
                         break;
                     case 10: // edit only card
                         System.out.println("m2o5 only one card");
-                        if (currentAlbum.getCard(cardIndexChosen).getAttacksLength() == 1) {
+                        if (currentAlbum.getCard(cardIndexChosen).getAttacksLength() == 1) { // IF ONLY ONE ATTACK IN CARD
                             oneAttackInCard();
-                            attackIndexChosen = 0;
-                        } else {
-                            chooseFromAList(myBlue, true, "attack", 125);
+                        } else { // if many attacks in card
+                            chooseFromAList(myBlue, true, "attack", 150);
                         }
                         editAttack(currentAlbum.getCard(0));
                         break;
@@ -532,6 +530,7 @@ public class Main implements ActionListener {
                 textField.requestFocusInWindow();
                 textField.setVisible(true);
                 removeCardButton.setVisible(true);
+                errorPane.setText("");
                 EventQueue.invokeLater(textField::requestFocusInWindow);
             }
         });
@@ -543,6 +542,7 @@ public class Main implements ActionListener {
                 textField.requestFocusInWindow();
                 textField.setVisible(true);
                 removeCardButton.setVisible(true);
+                errorPane.setText("");
                 EventQueue.invokeLater(textField::requestFocusInWindow);
             }
         });
@@ -554,6 +554,7 @@ public class Main implements ActionListener {
                 textField.requestFocusInWindow();
                 textField.setVisible(true);
                 removeCardButton.setVisible(true);
+                errorPane.setText("");
                 EventQueue.invokeLater(textField::requestFocusInWindow);
             }
         });
@@ -1035,23 +1036,25 @@ public class Main implements ActionListener {
 
         radio1.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                label2.setText("Enter album number:");
+                label2.setText("Enter card name:");
                 label2.setVisible(true);
                 textField.setEditable(true);
                 textField.requestFocusInWindow();
                 textField.setVisible(true);
                 removeCardButton.setVisible(true);
+                errorPane.setText("");
                 EventQueue.invokeLater(textField::requestFocusInWindow);
             }
         });
         radio2.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                label2.setText("<html>Enter album date in MM/DD/YYYY format:</html>");
+                label2.setText("Enter card HP:");
                 label2.setVisible(true);
                 textField.setEditable(true);
                 textField.requestFocusInWindow();
                 textField.setVisible(true);
                 removeCardButton.setVisible(true);
+                errorPane.setText("");
                 EventQueue.invokeLater(textField::requestFocusInWindow);
             }
         });
@@ -1062,6 +1065,7 @@ public class Main implements ActionListener {
                 textField.setEditable(false);
                 textField.setVisible(false);
                 removeCardButton.setVisible(true);
+                errorPane.setText("");
             }
         });
         radio4.addItemListener(e -> {
@@ -1071,6 +1075,7 @@ public class Main implements ActionListener {
                 textField.setEditable(false);
                 textField.setVisible(false);
                 removeCardButton.setVisible(true);
+                errorPane.setText("");
             }
         });
 
@@ -1222,7 +1227,7 @@ public class Main implements ActionListener {
         label.setFont(cmu_serif_18);
         JOptionPane.showMessageDialog(null, label, "One Album imported",
                 JOptionPane.INFORMATION_MESSAGE, happyPikachu);
-        albumIndexChosen = 0;
+        attackIndexChosen = 0;
     }
 
     public void oneCardInAlbum () {
@@ -1285,7 +1290,6 @@ public class Main implements ActionListener {
         int buttonYCo = (int) Math.round((height * 8.0) / 10);
         int buttonHeight = (int) Math.round((height * 1.0) / 10);
 
-        System.out.println("calculatedFont = " + calculatedFont);
         backButton.setBounds(xCo, buttonYCo, componentWidth, buttonHeight);
         Font buttonFont = new Font("CMU Serif", Font.BOLD, calculatedFont);
         Font paneFont = new Font("CMU Serif", Font.PLAIN, (int) Math.round(calculatedFont -
@@ -1494,9 +1498,10 @@ public class Main implements ActionListener {
 
     public void printNameDateAllAlbums (JTextPane useThisTextPane) {
         useThisTextPane.setText("");
-        for (Album album : albums) {
-            appendString(album.nameDateToString() + "\n", useThisTextPane);
+        for (int i = 0; i < albums.size()-1; i++) {
+            appendString(albums.get(i).nameDateToString() + "\n\n", useThisTextPane);
         }
+        appendString(albums.get(albums.size()-1).nameDateToString(), useThisTextPane);
     }
 
     public void printCards (JTextPane useThisTextPane, Album currentAlbum, boolean allData) {
@@ -1571,7 +1576,7 @@ public class Main implements ActionListener {
         yayJButton submitFileNameButton = new yayJButton(20, "Import Album");
         setUpThisButton(submitFileNameButton, 20, myGreen, cmu_serif_18);
         submitFileNameButton.addActionListener(e -> {
-            String returnedString = readFile(fileNameField.getText());
+            String returnedString = readFile(fileNameField.getText().trim());
             if (!returnedString.equals("Album import successful!")) {
                 errorLabel.setText(returnedString);
             } else {
@@ -1679,6 +1684,7 @@ public class Main implements ActionListener {
                 textField.requestFocusInWindow();
                 textField.setVisible(true);
                 removeAlbumButton.setVisible(true);
+                errorPane.setText("");
                 EventQueue.invokeLater(textField::requestFocusInWindow);
             }
         });
@@ -1690,6 +1696,7 @@ public class Main implements ActionListener {
                 textField.requestFocusInWindow();
                 textField.setVisible(true);
                 removeAlbumButton.setVisible(true);
+                errorPane.setText("");
                 EventQueue.invokeLater(textField::requestFocusInWindow);
             }
         });
@@ -1743,7 +1750,7 @@ public class Main implements ActionListener {
     public String removeAlbumDate (String input) {
         String validDate = validDate(input);
         if (validDate.isEmpty()) { // success!, valid date
-            Date date = new Date(parseDate(input));
+            Date date = new Date(parseDate(input.trim()));
             if (!duplicateAlbumDate(date, albums)) {
                 return "invalid album date";
             } else {

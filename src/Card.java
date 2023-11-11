@@ -63,7 +63,7 @@ public class Card implements Comparable <Card> {
     public String toString () {
         StringBuilder returnString = new StringBuilder(String.format("Name: %s%nHP: %d%nType: %s%nDate: %s%nAttacks: %n", name, HP, type, date));
         for (int i = 0; i < attacks.length; i++) {
-            returnString.append("\tAttack ").append(i + 1).append(":\n").append(attacks[i].tabbedToString()).append("\n");
+            returnString.append("    Attack ").append(i + 1).append(":\n").append(attacks[i].tabbedToString()).append("\n");
         }
         return returnString.toString();
     }

@@ -33,7 +33,7 @@ public class Album implements Comparable <Album> {
     }
 
     public static String collectionStatistics () {
-        return String.format("Collection Statistics: %n\t\t%d cards out of %d%n\t\tAverage HP: %.3f%n",
+        return String.format("Collection Statistics: %n\t%d cards out of %d%n\tAverage HP: %.3f%n",
                 collectionNumOfCards,
                 collectionCapacity,
                 ((double) collectionHP / ((collectionNumOfCards == 0) ? 1 : collectionNumOfCards)));
@@ -56,7 +56,7 @@ public class Album implements Comparable <Album> {
     }
 
     public String albumStatistics () { // average HP of THIS ALBUM
-        return String.format("Album %d Statistics: %n\t\t%d cards out of %d%n\t\tAverage HP: %.3f%n",
+        return String.format("Album %d Statistics: %n\t%d cards out of %d%n\tAverage HP: %.3f%n",
                 albumNum,
                 cards.size(),
                 maxCapacity,
@@ -139,7 +139,7 @@ public class Album implements Comparable <Album> {
     }
 
     public String nameDateToString () {
-        return String.format("Album Number: %d%nDate: %s%n", albumNum, date);
+        return String.format("Album Number: %d%nDate: %s", albumNum, date);
     }
 
     // equals method
