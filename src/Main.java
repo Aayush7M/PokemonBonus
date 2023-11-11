@@ -36,9 +36,9 @@ public class Main implements ActionListener {
 
 
     public Main () {
-        readFile("1");
-        readFile("2");
-        readFile("3");
+//        readFile("1");
+//        readFile("2");
+//        readFile("3");
 //        readFile("4", albums);
         readFile("5");
         mainPanel = new JPanel();
