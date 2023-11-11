@@ -10,19 +10,14 @@ public class Driver {
         System.out.println("Welcome!");
         ArrayList <Album> albums = new ArrayList <>();
         try {
-//            readFile(new BufferedReader(new FileReader("1.txt")), albums);
+            readFile(new BufferedReader(new FileReader("1.txt")), albums);
             readFile(new BufferedReader(new FileReader("2.txt")), albums);
-//            readFile(new BufferedReader(new FileReader("3.txt")), albums);
+            readFile(new BufferedReader(new FileReader("3.txt")), albums);
             readFile(new BufferedReader(new FileReader("4.txt")), albums);
             readFile(new BufferedReader(new FileReader("5.txt")), albums);
         } catch (IOException ignored) {
         }
         Scanner in = new Scanner(System.in);
-/*        if (getChar(in, "Would you like to add an album?") == 'y') {
-            do {
-                importAlbum(in, albums);
-            } while (getChar(in, "Would you like to add more albums?") == 'y');
-        }*/
 
         int mainMenuChoice;
         while ((mainMenuChoice = displayMenu(in, 0)) != 3) { // loop until exit
@@ -173,7 +168,7 @@ public class Driver {
                 case 2 -> // Display info on a particular card
                     System.out.println(getExistingCard(in, currentAlbum));
                 case 3 -> // Add a card
-                    addCard(in, currentAlbum);
+                    importCard(in, currentAlbum);
                 case 4 -> // Remove a card (4 options)
                     removeCard(displayMenu(in, 4), in, currentAlbum);
                 case 5 -> // Edit attack
@@ -269,7 +264,7 @@ public class Driver {
         System.out.println(Album.collectionStatistics());
     }
 
-    public static void addCard (Scanner in, Album currentAlbum) {
+    public static void importCard (Scanner in, Album currentAlbum) {
         if (currentAlbum.atMaxCapacity()) {
             System.out.println("Sorry, this album is at maximum capacity. You cannot add more cards.");
         } else {
@@ -277,7 +272,7 @@ public class Driver {
             int HP = getInt(in, "What is the HP of this card?", 1, Integer.MAX_VALUE);
             String type = getString(in, "What type is this card?", true);
             Date thisCardDate = getDate(in, "What is the date you got this card? (in MM/DD/YYYY format)");
-            Attack[] attacks = new Attack[getInt(in, "How many attacks does this card have?", 1, Integer.MAX_VALUE)];
+            Attack[] attacks = new Attack[getInt(in, "How many attacks does this card have?", 1, 10)];
             for (int j = 0; j < attacks.length; j++) {
                 String attackName = getString(in, "What is the name of attack " + (j+1), true);
                 String attackDescription = getString(in, "Enter attack description", false);
@@ -294,6 +289,7 @@ public class Driver {
         ArrayList <Card> cards = currentAlbum.getCards();
         switch (choice) {
             case 1: // remove all cards with name
+                currentAlbum.printAllInfoAllCards();
                 int firstIndexOfName;
                 String name;
                 do {
@@ -312,6 +308,7 @@ public class Driver {
                 }
                 break;
             case 2: // remove all cards with hp
+                currentAlbum.printAllInfoAllCards();
                 int firstIndexOfHP;
                 int hp;
                 do {
@@ -346,13 +343,12 @@ public class Driver {
             attack = attacks[0];
         } else {
             card.printAttacks();
-            attack = attacks[getInt(in, "Which attack would you like to edit?", 1, attacks.length)];
+            attack = attacks[getInt(in, "Which attack would you like to edit?", 1, attacks.length)-1];
         }
         int choice = displayMenu(in, 5);
         switch (choice) {
             case 1: // name
                 attack.edit("name", getString(in, "Enter new name: ", true));
-                card.sortAttacks();
                 break;
             case 2: // description
                 attack.edit("description", getString(in, "Enter new description: ", false));
@@ -441,45 +437,6 @@ public class Driver {
         } while (!validAnswer);
 
         return validInt;
-    }
-
-    public static char getChar (Scanner in, String message) {
-        String fullInput = "?"; // stores the original input from the user
-        char charInput = '?'; // stores the user's character response
-        boolean validAnswer;
-        do {
-            try {
-                System.out.print(message + ": ");
-                fullInput = in.nextLine().toLowerCase();
-
-                if (fullInput.length() > 1) { // the input is too long (more than one character)
-                    fullInput = "1";
-                    throw new IOException();
-                } else if (fullInput.isEmpty()) { //input length 0
-                    fullInput = "2";
-                    throw new IOException();
-                } else if (!(fullInput.equals("y") || fullInput.equals("n"))) {
-                    fullInput = "3";
-                    throw new IOException();
-                }
-                charInput = fullInput.charAt(0);
-
-                validAnswer = true;
-            } catch (IOException e) {
-                switch (fullInput) {
-                    case "1" ->  // input too long
-                            System.out.print("ERROR! Your response was more than one character. ");
-                    case "2" ->  // input length 0
-                            System.out.print("ERROR! You did not provide a response. ");
-                    case "3" -> // input is not y or n
-                            System.out.print("ERROR! Your response was not 'y' nor was it 'n'. ");
-                }
-                System.out.println("Please enter a valid character!");
-                fullInput = "?";
-                validAnswer = false;
-            }
-        } while (!validAnswer);
-        return charInput;
     }
 
     public static Date getDate (Scanner in, String message) {

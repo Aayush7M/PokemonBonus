@@ -12,7 +12,6 @@ public class Date implements Comparable <Date> {
         month = parsedDate[0];
         day = parsedDate[1];
         year = parsedDate[2];
-
     }
 
 
@@ -22,13 +21,20 @@ public class Date implements Comparable <Date> {
         int day = parsedDate[1];
         int year = parsedDate[2];
         int currentYear = Year.now().getValue();
+        //JA, FE, MA, AP, MA, JN, JL, AU, SE, OC, NO, DE
+        int[] daysInMonths = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         // invalid month or year
-        if (month < 1 || month > 12 || year < 1 || year > currentYear) {
+        if (day<1 || month < 1 || month > 12 || year < 1996 || year > currentYear) {
             return false;
+        } else if (year == 1996) { // check if day is before Pokémon creation
+            if (month < 10) { // month is before october
+                return false;
+            } else if (month == 10) {
+                return day >= 20;
+            }
         } else { // invalid day
-                                //JA, FE, MA, AP, MA, JN, JL, AU, SE, OC, NO, DE
-            int[] daysInMonths = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-            if (day > daysInMonths[month - 1] || day < 1) {
+
+            if (day > daysInMonths[month - 1]) {
                 return false;
             }
         }
@@ -48,7 +54,7 @@ public class Date implements Comparable <Date> {
 
     // to string
     public String toString () {
-        return String.format("%02d/%02d/%d", month, day, year);
+        return String.format("%02d/%02d/%04d", month, day, year);
     }
 
     //comparable

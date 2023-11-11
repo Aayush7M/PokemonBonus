@@ -38,10 +38,13 @@ public class Card implements Comparable <Card> {
         return attacks;
     }
 
-    // method
-    public void sortAttacks () {
-        Arrays.sort(attacks);
+    public Attack getAttack (int index) {
+        return attacks[index];
     }
+    public int getAttacksLength () {
+        return attacks.length;
+    }
+    // method
 
     public void printAttacks () {
         for (int i = 0; i < attacks.length; i++) {
