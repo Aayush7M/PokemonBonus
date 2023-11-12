@@ -181,7 +181,7 @@ public class Main implements ActionListener {
                 }
                 break;
             case "m0o2":
-                System.out.println("card menu");
+                System.out.println("card menu picked");
                 if (albums.isEmpty()) {
                     noAlbumsImported();
                     return;
@@ -196,6 +196,7 @@ public class Main implements ActionListener {
                     for (yayJButton jButton : cardMenu) {
                         jButton.setVisible(true);
                     }
+                    System.out.println("in card menu");
                     return;
                 } else {
                     chooseFromAList(myBlue, true, "album", 150);
@@ -1288,7 +1289,6 @@ public class Main implements ActionListener {
     }
 
     public void perfectlySizedDisplay (yayJButton backButton, int width, int height, int calculatedFont) {
-        System.out.println("in display");
         int xCo = (int) Math.round(width / 8.0);
         int componentWidth = (int) Math.round((width * 3.0) / 4);
 
@@ -1520,12 +1520,12 @@ public class Main implements ActionListener {
 
     public void printAlbum () {
         mainDisplayTextPane.setText("");
-        appendString(albums.get(albumIndexChosen) + "\n", mainDisplayTextPane);
+        appendString(albums.get(albumIndexChosen).toString(), mainDisplayTextPane);
     }
 
     public void printCard (ArrayList <Card> cards) {
         mainDisplayTextPane.setText("");
-        appendString(cards.get(cardIndexChosen) + "\n", mainDisplayTextPane);
+        appendString(cards.get(cardIndexChosen).toString(), mainDisplayTextPane);
     }
 
 
@@ -1590,7 +1590,7 @@ public class Main implements ActionListener {
                 errorLabel.setText(returnedString);
             } else {
                 getFileNameDialog.dispose();
-                System.out.println("album with file name \"" + returnedString + "\" imported");
+                System.out.println("album with file name \"" + fileNameField.getText().trim() + "\" imported");
             }
 
         });
