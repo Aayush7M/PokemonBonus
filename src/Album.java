@@ -39,13 +39,6 @@ public class Album implements Comparable <Album> {
         this.date = date;
     }
 
-    public static String collectionStatistics () {
-        return String.format("Collection Statistics: %n\t%d cards out of %d%n\tAverage HP: %.3f%n",
-                collectionNumOfCards,
-                collectionCapacity,
-                ((double) collectionHP / ((collectionNumOfCards == 0) ? 1 : collectionNumOfCards)));
-    }
-
     // getters
     public Date getDate () {
         return date;
@@ -72,6 +65,16 @@ public class Album implements Comparable <Album> {
 
     // methods
 
+    /**
+     * This method returns the statistics of the collection
+     * @return the statistics of the collection
+     */
+    public static String collectionStatistics () {
+        return String.format("Collection Statistics: %n\t%d cards out of %d%n\tAverage HP: %.3f%n",
+                collectionNumOfCards,
+                collectionCapacity,
+                ((double) collectionHP / ((collectionNumOfCards == 0) ? 1 : collectionNumOfCards)));
+    }
     /**
      * Removes the album from the collection statistics
      */

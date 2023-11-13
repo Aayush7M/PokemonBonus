@@ -66,10 +66,10 @@ public class Main implements ActionListener {
      */
     public Main () {
         readFile("1");
-//        readFile("2");
-//        readFile("3");
+        readFile("2");
+        readFile("3");
 //        readFile("4");
-//        readFile("5");
+        readFile("5");
         mainPanel = new JPanel();
         mainFrame = new JFrame();
         mainFrame = new JFrame();
@@ -544,7 +544,7 @@ public class Main implements ActionListener {
         yayJButton removeCardButton = new yayJButton(20, "Edit Attack");
         setUpThisButton(removeCardButton, 20, myBlue, cmu_serif_20);
         removeCardButton.addActionListener(e -> {
-            String input = textField.getText();
+            String input = textField.getText().trim();
             if (radio1.isSelected()) { //edit the name
                 String errorName = validString(input, true);
                 if (!errorName.isEmpty()) { // invalid input
@@ -720,7 +720,7 @@ public class Main implements ActionListener {
                 }
                 for (int i = 0; i < value * 2; i++) {
                     if (!attackErrorLabels[i].getText().isEmpty()) {
-                        break;
+                        return;
                     }
                 }
                 // if the user inputted valid attacks
@@ -1284,7 +1284,7 @@ public class Main implements ActionListener {
     public String getString (String in, JLabel errorLbl, boolean emptyInputForbidden) {
         String validString = validString(in, emptyInputForbidden);
         errorLbl.setText(validString);
-        return in;
+        return in.trim();
     }
 
     /**
@@ -1350,7 +1350,7 @@ public class Main implements ActionListener {
      */
     public void oneAlbumImported () {
         JLabel label = new JLabel("<html> Only one album imported, <br> so that album has been <br> automatically" +
-                "chosen. </html>");
+                " chosen. </html>");
         label.setFont(cmu_serif_18);
         JOptionPane.showMessageDialog(null, label, "One Album imported",
                 JOptionPane.INFORMATION_MESSAGE, happyPikachu);
@@ -1925,7 +1925,7 @@ public class Main implements ActionListener {
         yayJButton removeAlbumButton = new yayJButton(20, "Remove Albums");
         setUpThisButton(removeAlbumButton, 20, myGreen, cmu_serif_20);
         removeAlbumButton.addActionListener(e -> {
-            String input = textField.getText();
+            String input = textField.getText().trim();
             if (radio1.isSelected()) { // number
                 String result = removeAlbumNum(input);
                 if (!result.equals("success")) {
@@ -2061,6 +2061,7 @@ public class Main implements ActionListener {
     public String validDate (String input) {
         int[] parsedDate;
         input = input.trim().toLowerCase();
+        System.out.println(input);
         if (input.isEmpty()) { //input length 0 chars
             return "ERROR! You did not provide a response.";
         }
