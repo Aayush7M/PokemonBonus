@@ -1,4 +1,11 @@
+/*
+    Name: Aayush Mengane
+    Due Date: Sunday, November 12, 2023
+    Description: This Card class represents a card.
+    It stores the name, HP, type, date, and attacks of the card.
+*/
 public class Card implements Comparable <Card> {
+    // instance variables
     private final String name;
     private final int HP;
     private String type;

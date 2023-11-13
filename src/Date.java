@@ -2,7 +2,13 @@ import java.time.MonthDay;
 import java.time.Year;
 import java.time.YearMonth;
 
+/*
+    Name: Aayush Mengane
+    Due Date: Sunday, November 12, 2023
+    Description: This Date class represents a date. It stores the month, day, and year of the date.
+*/
 public class Date implements Comparable <Date> {
+    // instance variables
     private final int month;
     private final int day;
     private final int year;
@@ -15,7 +21,11 @@ public class Date implements Comparable <Date> {
     }
 
 
-    // methods
+    /**
+     * This method checks if the month, day, and year are valid.
+     * @param parsedDate the parsed date
+     * @return true if the month, day, and year are invalid, false otherwise
+     */
     public static boolean invalidMonthDayYearTriplet (int[] parsedDate) {
         int month = parsedDate[0];
         int day = parsedDate[1];

@@ -1,4 +1,10 @@
+/*
+    Name: Aayush Mengane
+    Due Date: Sunday, November 12, 2023
+    Description: This Attack class represents an attack of a card. It stores the name, description, and damage of the attack.
+*/
 public class Attack implements Comparable <Attack> {
+    // instance variables
     private String name;
     private String description;
     private String damage;
@@ -21,6 +27,12 @@ public class Attack implements Comparable <Attack> {
     }
 
     // method
+
+    /**
+     * This method edits an attribute of the attack.
+     * @param attributeToChange the attribute to change, name, description, or damage
+     * @param changeTo the new value of the attribute
+     */
     public void edit (String attributeToChange, String changeTo) {
         if (attributeToChange.equals("name")) {
             this.name = changeTo;
